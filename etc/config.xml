@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <catalog>
+            <search>
+                <engine>recomdoai_search</engine>
+                <recomdoai_search_server_hostname>localhost</recomdoai_search_server_hostname>
+                <recomdoai_search_server_port>9200</recomdoai_search_server_port>
+                <recomdoai_search_index_prefix>magento2</recomdoai_search_index_prefix>
+                <recomdoai_search_enable_auth>0</recomdoai_search_enable_auth>
+                <recomdoai_search_server_timeout>15</recomdoai_search_server_timeout>
+                <recomdoai_search_minimum_should_match/>
+            </search>
+        </catalog>
+    </default>
+</config>
