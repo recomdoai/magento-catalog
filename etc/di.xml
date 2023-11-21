@@ -28,7 +28,7 @@
     <type name="Magento\Search\Model\EngineResolver">
         <arguments>
             <argument name="engines" xsi:type="array">
-                <item name="recomdoaisearch" xsi:type="string">Recomdoai Search</item>
+                <item name="recomdoaisearch" xsi:type="string">recomdoaisearch</item>
             </argument>
         </arguments>
     </type>
@@ -36,6 +36,100 @@
         <arguments>
             <argument name="engines" xsi:type="array">
                 <item name="recomdoaisearch" xsi:type="string">Magento\Elasticsearch\Model\ResourceModel\Engine</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Adapter -->
+    <type name="Magento\Search\Model\AdapterFactory">
+        <arguments>
+            <argument name="adapters" xsi:type="array">
+                <item name="recomdoaisearch" xsi:type="string">\Recomdoai\Catalog\SearchAdapter\Adapter</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- PageSize -->
+    <type name="Magento\Search\Model\Search\PageSizeProvider">
+        <arguments>
+            <argument name="pageSizeBySearchEngine" xsi:type="array">
+                <item name="recomdoaisearch" xsi:type="number">10000</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="elasticsearchLayerCategoryItemCollectionProvider" type="Magento\Elasticsearch\Model\Layer\Category\ItemCollectionProvider">
+        <arguments>
+            <argument name="factories" xsi:type="array">
+                <item name="recomdoaisearch" xsi:type="object">elasticsearchCategoryCollectionFactory</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Magento\CatalogSearch\Model\Search\ItemCollectionProvider">
+        <arguments>
+            <argument name="factories" xsi:type="array">
+                <item name="recomdoaisearch" xsi:type="object">elasticsearchAdvancedCollectionFactory</item>
+                <item name="default" xsi:type="object">elasticsearchAdvancedCollectionFactory</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\CatalogSearch\Model\Advanced\ProductCollectionPrepareStrategyProvider">
+        <arguments>
+            <argument name="strategies" xsi:type="array">
+                <item name="recomdoaisearch" xsi:type="object">Magento\Elasticsearch\Model\Advanced\ProductCollectionPrepareStrategy</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="elasticsearchLayerSearchItemCollectionProvider" type="Magento\Elasticsearch\Model\Layer\Search\ItemCollectionProvider">
+        <arguments>
+            <argument name="factories" xsi:type="array">
+                <item name="recomdoaisearch" xsi:type="object">elasticsearchFulltextSearchCollectionFactory</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Magento\OpenSearch\Model\SearchClient">
+        <arguments>
+            <argument name="fieldsMappingPreprocessors" xsi:type="array">
+                <item name="recomdoaisearch_copy_searchable_fields_to_search_field" xsi:type="object">Magento\Elasticsearch\Model\Adapter\FieldMapper\CopySearchableFieldsToSearchField</item>
+                <item name="recomdoaisearch_add_default_search_field" xsi:type="object">Magento\Elasticsearch\Model\Adapter\FieldMapper\AddDefaultSearchField</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Search\Model\SearchEngine\Validator">
+        <arguments>
+            <argument name="engineValidators" xsi:type="array">
+                <item name="recomdoaisearch" xsi:type="object">Magento\OpenSearch\Setup\Validator</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\OpenSearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\DefaultResolver">
+        <arguments>
+            <argument name="baseResolver" xsi:type="object">Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\DefaultResolver</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\OpenSearch\Model\Adapter\DynamicTemplatesProvider">
+        <arguments>
+            <argument name="mappers" xsi:type="array">
+                <item name="price_mapping" xsi:type="object">Magento\OpenSearch\Model\Adapter\DynamicTemplates\PriceMapper</item>
+                <item name="position_mapping" xsi:type="object">Magento\OpenSearch\Model\Adapter\DynamicTemplates\PositionMapper</item>
+                <item name="string_mapping" xsi:type="object">Magento\OpenSearch\Model\Adapter\DynamicTemplates\StringMapper</item>
+                <item name="integer_mapping" xsi:type="object">Magento\OpenSearch\Model\Adapter\DynamicTemplates\IntegerMapper</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Fixes -->
+    <type name="Magento\Framework\Search\Dynamic\IntervalFactory">
+        <arguments>
+            <argument name="intervals" xsi:type="array">
+                <item name="recomdoaisearch" xsi:type="string">Magento\Elasticsearch\Elasticsearch5\SearchAdapter\Aggregation\Interval</item>
             </argument>
         </arguments>
     </type>
