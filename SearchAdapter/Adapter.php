@@ -15,6 +15,7 @@ use Magento\Framework\Search\AdapterInterface;
 use Magento\Framework\Search\RequestInterface;
 use Magento\Framework\Search\Response\QueryResponse;
 use Psr\Log\LoggerInterface;
+use Recomdoai\Core\Helper\Connection;
 
 /**
  * OpenSearch Search Adapter
@@ -33,14 +34,6 @@ class Adapter implements AdapterInterface
      */
     private $responseFactory;
 
-    /**
-     * @var ConnectionManager
-     */
-    private $connectionManager;
-
-    /**
-     * @var AggregationBuilder
-     */
     private $aggregationBuilder;
 
     /**
@@ -70,23 +63,17 @@ class Adapter implements AdapterInterface
      */
     private $logger;
 
-    /**
-     * @param ConnectionManager $connectionManager
-     * @param Mapper $mapper
-     * @param ResponseFactory $responseFactory
-     * @param AggregationBuilder $aggregationBuilder
-     * @param QueryContainerFactory $queryContainerFactory
-     * @param LoggerInterface $logger
-     */
+
     public function __construct(
-        ConnectionManager $connectionManager,
-        Mapper $mapper,
-        ResponseFactory $responseFactory,
-        AggregationBuilder $aggregationBuilder,
+        Connection            $connectionhelper,
+        Mapper                $mapper,
+        ResponseFactory       $responseFactory,
+        AggregationBuilder    $aggregationBuilder,
         QueryContainerFactory $queryContainerFactory,
-        LoggerInterface $logger
-    ) {
-        $this->connectionManager = $connectionManager;
+        LoggerInterface       $logger
+    )
+    {
+        $this->connecthelper = $connectionhelper;
         $this->mapper = $mapper;
         $this->responseFactory = $responseFactory;
         $this->aggregationBuilder = $aggregationBuilder;
@@ -100,14 +87,14 @@ class Adapter implements AdapterInterface
      * @param RequestInterface $request
      * @return QueryResponse
      */
-    public function query(RequestInterface $request) : QueryResponse
+    public function query(RequestInterface $request): QueryResponse
     {
         $aggregationBuilder = $this->aggregationBuilder;
         $query = $this->mapper->buildQuery($request);
         $aggregationBuilder->setQuery($this->queryContainerFactory->create(['query' => $query]));
 
         try {
-            $rawResponse = $client->query($query);
+            $rawResponse = self::$emptyRawResponse;
         } catch (\Exception $e) {
             $this->logger->critical($e);
             // return empty search result in case an exception is thrown from OpenSearch
