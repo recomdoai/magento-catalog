@@ -93,6 +93,8 @@ class Adapter implements AdapterInterface
         $query = $this->mapper->buildQuery($request);
         $aggregationBuilder->setQuery($this->queryContainerFactory->create(['query' => $query]));
 
+        $searchResult = $this->connecthelper->callAPI('search/recomdoai_api/search_with_suggestions?keyword=' . $request->getQuery()->getShould()['search']->getValue());
+
         try {
             $rawResponse = self::$emptyRawResponse;
         } catch (\Exception $e) {
