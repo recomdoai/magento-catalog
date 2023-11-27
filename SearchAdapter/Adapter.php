@@ -105,7 +105,7 @@ class Adapter implements AdapterInterface
             [
                 'documents' => $rawDocuments,
                 'aggregations' => $aggregationBuilder->build($request, $rawResponse['data']),
-                'total' => $rawResponse['hits']['total']['value'] ?? 0
+                'total' => $rawResponse['data']['hits']['total']['value'] ?? 0
             ]
         );
         return $queryResponse;
