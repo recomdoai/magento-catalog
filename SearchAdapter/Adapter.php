@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace Recomdoai\Catalog\SearchAdapter;
 
 use Magento\Elasticsearch\SearchAdapter\Aggregation\Builder as AggregationBuilder;
-use Magento\Elasticsearch\SearchAdapter\ConnectionManager;
 use Magento\Elasticsearch\SearchAdapter\QueryContainerFactory;
 use Magento\Elasticsearch\SearchAdapter\ResponseFactory;
 use Magento\Framework\Search\AdapterInterface;
@@ -93,15 +92,23 @@ class Adapter implements AdapterInterface
         $query = $this->mapper->buildQuery($request);
         $aggregationBuilder->setQuery($this->queryContainerFactory->create(['query' => $query]));
 
-        $searchResult = $this->connecthelper->callAPI('search/recomdoai_api/search_with_suggestions?keyword=' . $request->getQuery()->getShould()['search']->getValue());
-
         try {
-            $rawResponse = self::$emptyRawResponse;
+            $rawResponse = $this->connecthelper->callGetAPI('search/recomdoai_api/search?keyword=' . $request->getQuery()->getShould()['search']->getValue());
         } catch (\Exception $e) {
             $this->logger->critical($e);
             // return empty search result in case an exception is thrown from OpenSearch
             $rawResponse = self::$emptyRawResponse;
         }
+
+        $rawDocuments = $rawResponse['data']['hits']['hits'] ?? [];
+        $queryResponse = $this->responseFactory->create(
+            [
+                'documents' => $rawDocuments,
+                'aggregations' => $aggregationBuilder->build($request, $rawResponse['data']),
+                'total' => $rawResponse['hits']['total']['value'] ?? 0
+            ]
+        );
+        return $queryResponse;
 
     }
 }

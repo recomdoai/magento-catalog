@@ -58,7 +58,8 @@
         </arguments>
     </type>
 
-    <virtualType name="elasticsearchLayerCategoryItemCollectionProvider" type="Magento\Elasticsearch\Model\Layer\Category\ItemCollectionProvider">
+    <virtualType name="elasticsearchLayerCategoryItemCollectionProvider"
+                 type="Magento\Elasticsearch\Model\Layer\Category\ItemCollectionProvider">
         <arguments>
             <argument name="factories" xsi:type="array">
                 <item name="recomdoaisearch" xsi:type="object">elasticsearchCategoryCollectionFactory</item>
@@ -78,12 +79,15 @@
     <type name="Magento\CatalogSearch\Model\Advanced\ProductCollectionPrepareStrategyProvider">
         <arguments>
             <argument name="strategies" xsi:type="array">
-                <item name="recomdoaisearch" xsi:type="object">Magento\Elasticsearch\Model\Advanced\ProductCollectionPrepareStrategy</item>
+                <item name="recomdoaisearch" xsi:type="object">
+                    Magento\Elasticsearch\Model\Advanced\ProductCollectionPrepareStrategy
+                </item>
             </argument>
         </arguments>
     </type>
 
-    <virtualType name="elasticsearchLayerSearchItemCollectionProvider" type="Magento\Elasticsearch\Model\Layer\Search\ItemCollectionProvider">
+    <virtualType name="elasticsearchLayerSearchItemCollectionProvider"
+                 type="Magento\Elasticsearch\Model\Layer\Search\ItemCollectionProvider">
         <arguments>
             <argument name="factories" xsi:type="array">
                 <item name="recomdoaisearch" xsi:type="object">elasticsearchFulltextSearchCollectionFactory</item>
@@ -94,8 +98,12 @@
     <type name="Magento\OpenSearch\Model\SearchClient">
         <arguments>
             <argument name="fieldsMappingPreprocessors" xsi:type="array">
-                <item name="recomdoaisearch_copy_searchable_fields_to_search_field" xsi:type="object">Magento\Elasticsearch\Model\Adapter\FieldMapper\CopySearchableFieldsToSearchField</item>
-                <item name="recomdoaisearch_add_default_search_field" xsi:type="object">Magento\Elasticsearch\Model\Adapter\FieldMapper\AddDefaultSearchField</item>
+                <item name="recomdoaisearch_copy_searchable_fields_to_search_field" xsi:type="object">
+                    Magento\Elasticsearch\Model\Adapter\FieldMapper\CopySearchableFieldsToSearchField
+                </item>
+                <item name="recomdoaisearch_add_default_search_field" xsi:type="object">
+                    Magento\Elasticsearch\Model\Adapter\FieldMapper\AddDefaultSearchField
+                </item>
             </argument>
         </arguments>
     </type>
@@ -110,17 +118,27 @@
 
     <type name="Magento\OpenSearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\DefaultResolver">
         <arguments>
-            <argument name="baseResolver" xsi:type="object">Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\DefaultResolver</argument>
+            <argument name="baseResolver" xsi:type="object">
+                Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\DefaultResolver
+            </argument>
         </arguments>
     </type>
 
     <type name="Magento\OpenSearch\Model\Adapter\DynamicTemplatesProvider">
         <arguments>
             <argument name="mappers" xsi:type="array">
-                <item name="price_mapping" xsi:type="object">Magento\OpenSearch\Model\Adapter\DynamicTemplates\PriceMapper</item>
-                <item name="position_mapping" xsi:type="object">Magento\OpenSearch\Model\Adapter\DynamicTemplates\PositionMapper</item>
-                <item name="string_mapping" xsi:type="object">Magento\OpenSearch\Model\Adapter\DynamicTemplates\StringMapper</item>
-                <item name="integer_mapping" xsi:type="object">Magento\OpenSearch\Model\Adapter\DynamicTemplates\IntegerMapper</item>
+                <item name="price_mapping" xsi:type="object">
+                    Magento\OpenSearch\Model\Adapter\DynamicTemplates\PriceMapper
+                </item>
+                <item name="position_mapping" xsi:type="object">
+                    Magento\OpenSearch\Model\Adapter\DynamicTemplates\PositionMapper
+                </item>
+                <item name="string_mapping" xsi:type="object">
+                    Magento\OpenSearch\Model\Adapter\DynamicTemplates\StringMapper
+                </item>
+                <item name="integer_mapping" xsi:type="object">
+                    Magento\OpenSearch\Model\Adapter\DynamicTemplates\IntegerMapper
+                </item>
             </argument>
         </arguments>
     </type>
@@ -129,7 +147,9 @@
     <type name="Magento\Framework\Search\Dynamic\IntervalFactory">
         <arguments>
             <argument name="intervals" xsi:type="array">
-                <item name="recomdoaisearch" xsi:type="string">Magento\Elasticsearch\Elasticsearch5\SearchAdapter\Aggregation\Interval</item>
+                <item name="recomdoaisearch" xsi:type="string">
+                    Magento\Elasticsearch\Elasticsearch5\SearchAdapter\Aggregation\Interval
+                </item>
             </argument>
         </arguments>
     </type>
@@ -139,7 +159,9 @@
     <type name="Magento\Elasticsearch\Elasticsearch5\Model\Adapter\BatchDataMapper\CategoryFieldsProviderProxy">
         <arguments>
             <argument name="categoryFieldsProviders" xsi:type="array">
-                <item name="recomdoaisearch" xsi:type="object">Magento\Elasticsearch\Elasticsearch5\Model\Adapter\BatchDataMapper\CategoryFieldsProvider</item>
+                <item name="recomdoaisearch" xsi:type="object">
+                    Magento\Elasticsearch\Elasticsearch5\Model\Adapter\BatchDataMapper\CategoryFieldsProvider
+                </item>
             </argument>
         </arguments>
     </type>
@@ -147,7 +169,9 @@
     <type name="Magento\Elasticsearch\Elasticsearch5\Model\Adapter\FieldMapper\ProductFieldMapperProxy">
         <arguments>
             <argument name="productFieldMappers" xsi:type="array">
-                <item name="recomdoaisearch" xsi:type="object">Magento\OpenSearch\Model\Adapter\FieldMapper\ProductFieldMapper</item>
+                <item name="recomdoaisearch" xsi:type="object">
+                    Magento\OpenSearch\Model\Adapter\FieldMapper\ProductFieldMapper
+                </item>
             </argument>
         </arguments>
     </type>
@@ -155,21 +179,45 @@
                  type="Magento\Elasticsearch\Elasticsearch5\Model\Adapter\FieldMapper\ProductFieldMapper">
         <arguments>
             <argument name="fieldProvider" xsi:type="object">elasticsearch5FieldProvider</argument>
-            <argument name="fieldNameResolver" xsi:type="object">\Magento\OpenSearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\CompositeResolver</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="\Magento\OpenSearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\CompositeResolver"
-                 type="\Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\CompositeResolver">
-        <arguments>
-            <argument name="items" xsi:type="array">
-                <item name="notEav" xsi:type="object" sortOrder="10">\Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\NotEavAttribute</item>
-                <item name="special" xsi:type="object" sortOrder="20">\Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\SpecialAttribute</item>
-                <item name="price" xsi:type="object" sortOrder="30">\Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\Price</item>
-                <item name="categoryName" xsi:type="object" sortOrder="40">\Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\CategoryName</item>
-                <item name="position" xsi:type="object" sortOrder="50">\Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\Position</item>
-                <item name="default" xsi:type="object" sortOrder="100">Magento\OpenSearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\DefaultResolver</item>
+            <argument name="fieldNameResolver" xsi:type="object">
+                \Magento\OpenSearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\CompositeResolver
             </argument>
         </arguments>
     </virtualType>
+    <virtualType
+        name="\Magento\OpenSearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\CompositeResolver"
+        type="\Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\CompositeResolver">
+        <arguments>
+            <argument name="items" xsi:type="array">
+                <item name="notEav" xsi:type="object" sortOrder="10">
+                    \Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\NotEavAttribute
+                </item>
+                <item name="special" xsi:type="object" sortOrder="20">
+                    \Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\SpecialAttribute
+                </item>
+                <item name="price" xsi:type="object" sortOrder="30">
+                    \Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\Price
+                </item>
+                <item name="categoryName" xsi:type="object" sortOrder="40">
+                    \Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\CategoryName
+                </item>
+                <item name="position" xsi:type="object" sortOrder="50">
+                    \Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\Position
+                </item>
+                <item name="default" xsi:type="object" sortOrder="100">
+                    Magento\OpenSearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\DefaultResolver
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- suggestions -->
+    <type name="Magento\AdvancedSearch\Model\SuggestedQueries">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="recomdoaisearch" xsi:type="string">Recomdoai\Catalog\Model\DataProvider\Suggestions</item>
+            </argument>
+        </arguments>
+    </type>
 
 </config>
