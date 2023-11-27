@@ -16,35 +16,8 @@ use Magento\Framework\Search\Response\QueryResponse;
 use Psr\Log\LoggerInterface;
 use Recomdoai\Core\Helper\Connection;
 
-/**
- * OpenSearch Search Adapter
- */
 class Adapter implements AdapterInterface
 {
-    /**
-     * Mapper instance
-     *
-     * @var Mapper
-     */
-    private $mapper;
-
-    /**
-     * @var ResponseFactory
-     */
-    private $responseFactory;
-
-    private $aggregationBuilder;
-
-    /**
-     * @var QueryContainerFactory
-     */
-    private $queryContainerFactory;
-
-    /**
-     * Empty response from OpenSearch
-     *
-     * @var array
-     */
     private static $emptyRawResponse = [
         'hits' => [
             'hits' => []
@@ -56,11 +29,6 @@ class Adapter implements AdapterInterface
             ]
         ]
     ];
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
 
 
     public function __construct(
@@ -80,12 +48,6 @@ class Adapter implements AdapterInterface
         $this->logger = $logger;
     }
 
-    /**
-     * Search query
-     *
-     * @param RequestInterface $request
-     * @return QueryResponse
-     */
     public function query(RequestInterface $request): QueryResponse
     {
         $aggregationBuilder = $this->aggregationBuilder;

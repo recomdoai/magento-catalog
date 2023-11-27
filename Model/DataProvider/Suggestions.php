@@ -43,7 +43,7 @@ class Suggestions implements SuggestedQueriesInterface
 
     private function getSuggestions(QueryInterface $query)
     {
-        $searchSuggestionsCount = $this->getSearchSuggestionsCount();
+        $searchSuggestionsCount = 10;
 
         $result = $this->connecthelper->requestGetAPI('search/recomdoai_api/suggestions?keyword=' . $query->getQueryText());
 
