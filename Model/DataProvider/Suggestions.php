@@ -36,7 +36,7 @@ class Suggestions implements SuggestedQueriesInterface
         $this->queryResultFactory = $queryResultFactory;
         $this->scopeConfig = $scopeConfig;
         $this->config = $config;
-        $this->logger = $logger ;
+        $this->logger = $logger;
         $this->getSuggestionFrequency = $getSuggestionFrequency;
         $this->responseErrorExceptionList = array_merge($this->responseErrorExceptionList, $responseErrorExceptionList);
     }
@@ -45,7 +45,7 @@ class Suggestions implements SuggestedQueriesInterface
     {
         $searchSuggestionsCount = $this->getSearchSuggestionsCount();
 
-        $result = $this->connecthelper->callGetAPI('search/recomdoai_api/suggestions?keyword=' . $query->getQueryText());
+        $result = $this->connecthelper->requestGetAPI('search/recomdoai_api/suggestions?keyword=' . $query->getQueryText());
 
         if (is_array($result) && isset($result['data'])) {
             foreach ($result['data']['suggest'] ?? [] as $suggest) {
