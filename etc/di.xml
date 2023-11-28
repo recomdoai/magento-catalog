@@ -220,4 +220,30 @@
         </arguments>
     </type>
 
+
+    <!-- Resolver -->
+    <type name="Magento\AdvancedSearch\Model\Client\ClientResolver">
+        <arguments>
+            <argument name="clientFactories" xsi:type="array">
+                <item name="recomdoaisearch" xsi:type="string">\Magento\OpenSearch\Model\Client\OpenSearchFactory</item>
+            </argument>
+            <argument name="clientOptions" xsi:type="array">
+                <item name="recomdoaisearch" xsi:type="string">\Magento\Elasticsearch\Model\Config</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="Magento\OpenSearch\Model\Client\OpenSearchFactory" type="Magento\AdvancedSearch\Model\Client\ClientFactory">
+        <arguments>
+            <argument name="clientClass" xsi:type="string">Magento\OpenSearch\Model\SearchClient</argument>
+            <argument name="recomdoaisearch" xsi:type="string">Magento\OpenSearch\Model\OpenSearch</argument>
+        </arguments>
+    </virtualType>
+    <type name="Magento\Elasticsearch\Elasticsearch5\Model\Client\ClientFactoryProxy">
+        <arguments>
+            <argument name="clientFactories" xsi:type="array">
+                <item name="recomdoaisearch" xsi:type="object">Magento\OpenSearch\Model\Client\OpenSearchFactory</item>
+            </argument>
+        </arguments>
+    </type>
+
 </config>
