@@ -8,51 +8,16 @@ declare(strict_types=1);
 namespace Recomdoai\Catalog\SearchAdapter;
 
 use Magento\Elasticsearch\SearchAdapter\Aggregation\Builder as AggregationBuilder;
-use Magento\Elasticsearch\SearchAdapter\ConnectionManager;
 use Magento\Elasticsearch\SearchAdapter\QueryContainerFactory;
 use Magento\Elasticsearch\SearchAdapter\ResponseFactory;
 use Magento\Framework\Search\AdapterInterface;
 use Magento\Framework\Search\RequestInterface;
 use Magento\Framework\Search\Response\QueryResponse;
 use Psr\Log\LoggerInterface;
+use Recomdoai\Core\Helper\Connection;
 
-/**
- * OpenSearch Search Adapter
- */
 class Adapter implements AdapterInterface
 {
-    /**
-     * Mapper instance
-     *
-     * @var Mapper
-     */
-    private $mapper;
-
-    /**
-     * @var ResponseFactory
-     */
-    private $responseFactory;
-
-    /**
-     * @var ConnectionManager
-     */
-    private $connectionManager;
-
-    /**
-     * @var AggregationBuilder
-     */
-    private $aggregationBuilder;
-
-    /**
-     * @var QueryContainerFactory
-     */
-    private $queryContainerFactory;
-
-    /**
-     * Empty response from OpenSearch
-     *
-     * @var array
-     */
     private static $emptyRawResponse = [
         'hits' => [
             'hits' => []
@@ -65,28 +30,16 @@ class Adapter implements AdapterInterface
         ]
     ];
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
 
-    /**
-     * @param ConnectionManager $connectionManager
-     * @param Mapper $mapper
-     * @param ResponseFactory $responseFactory
-     * @param AggregationBuilder $aggregationBuilder
-     * @param QueryContainerFactory $queryContainerFactory
-     * @param LoggerInterface $logger
-     */
     public function __construct(
-        ConnectionManager $connectionManager,
-        Mapper $mapper,
-        ResponseFactory $responseFactory,
-        AggregationBuilder $aggregationBuilder,
+        Connection            $connectionhelper,
+        Mapper                $mapper,
+        ResponseFactory       $responseFactory,
+        AggregationBuilder    $aggregationBuilder,
         QueryContainerFactory $queryContainerFactory,
-        LoggerInterface $logger
+        LoggerInterface       $logger
     ) {
-        $this->connectionManager = $connectionManager;
+        $this->connecthelper = $connectionhelper;
         $this->mapper = $mapper;
         $this->responseFactory = $responseFactory;
         $this->aggregationBuilder = $aggregationBuilder;
@@ -94,33 +47,27 @@ class Adapter implements AdapterInterface
         $this->logger = $logger;
     }
 
-    /**
-     * Search query
-     *
-     * @param RequestInterface $request
-     * @return QueryResponse
-     */
-    public function query(RequestInterface $request) : QueryResponse
+    public function query(RequestInterface $request): QueryResponse
     {
-        $client = $this->connectionManager->getConnection();
         $aggregationBuilder = $this->aggregationBuilder;
         $query = $this->mapper->buildQuery($request);
         $aggregationBuilder->setQuery($this->queryContainerFactory->create(['query' => $query]));
+        $queryText = urlencode($request->getQuery()->getShould()['search']->getValue());
 
         try {
-            $rawResponse = $client->query($query);
+            $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/search_with_suggestions?keyword=' . $queryText);
         } catch (\Exception $e) {
             $this->logger->critical($e);
             // return empty search result in case an exception is thrown from OpenSearch
             $rawResponse = self::$emptyRawResponse;
         }
 
-        $rawDocuments = $rawResponse['hits']['hits'] ?? [];
+        $rawDocuments = $rawResponse['data']['hits']['hits'] ?? [];
         $queryResponse = $this->responseFactory->create(
             [
                 'documents' => $rawDocuments,
-                'aggregations' => $aggregationBuilder->build($request, $rawResponse),
-                'total' => $rawResponse['hits']['total']['value'] ?? 0
+                'aggregations' => $aggregationBuilder->build($request, $rawResponse['data']),
+                'total' => $rawResponse['data']['hits']['total']['value'] ?? 0
             ]
         );
         return $queryResponse;
