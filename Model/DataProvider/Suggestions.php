@@ -30,8 +30,7 @@ class Suggestions implements SuggestedQueriesInterface
         LoggerInterface                  $logger = null,
         ?GetSuggestionFrequencyInterface $getSuggestionFrequency = null,
         array                            $responseErrorExceptionList = []
-    )
-    {
+    ) {
         $this->connecthelper = $connectionhelper;
         $this->queryResultFactory = $queryResultFactory;
         $this->scopeConfig = $scopeConfig;

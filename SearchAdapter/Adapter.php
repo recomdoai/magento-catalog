@@ -38,8 +38,7 @@ class Adapter implements AdapterInterface
         AggregationBuilder    $aggregationBuilder,
         QueryContainerFactory $queryContainerFactory,
         LoggerInterface       $logger
-    )
-    {
+    ) {
         $this->connecthelper = $connectionhelper;
         $this->mapper = $mapper;
         $this->responseFactory = $responseFactory;
@@ -72,6 +71,5 @@ class Adapter implements AdapterInterface
             ]
         );
         return $queryResponse;
-
     }
 }
