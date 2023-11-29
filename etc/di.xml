@@ -232,7 +232,8 @@
             </argument>
         </arguments>
     </type>
-    <virtualType name="Magento\OpenSearch\Model\Client\OpenSearchFactory" type="Magento\AdvancedSearch\Model\Client\ClientFactory">
+    <virtualType name="Magento\OpenSearch\Model\Client\OpenSearchFactory"
+                 type="Magento\AdvancedSearch\Model\Client\ClientFactory">
         <arguments>
             <argument name="clientClass" xsi:type="string">Magento\OpenSearch\Model\SearchClient</argument>
             <argument name="recomdoaisearch" xsi:type="string">Magento\OpenSearch\Model\OpenSearch</argument>
@@ -245,5 +246,22 @@
             </argument>
         </arguments>
     </type>
+
+    <!-- Index -->
+    <type name="Magento\CatalogSearch\Model\Indexer\IndexerHandlerFactory">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="recomdoaisearch" xsi:type="string">Recomdoai\Catalog\Model\Indexer\IndexerHandler</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\CatalogSearch\Model\Indexer\IndexStructureFactory">
+        <arguments>
+            <argument name="structures" xsi:type="array">
+                <item name="recomdoaisearch" xsi:type="string">Recomdoai\Catalog\Model\Indexer\IndexStructure</item>
+            </argument>
+        </arguments>
+    </type>
+
 
 </config>
