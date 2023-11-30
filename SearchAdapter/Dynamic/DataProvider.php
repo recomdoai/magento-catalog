@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Recomdoai\Catalog\SearchAdapter\Dynamic;
 
 use Magento\Elasticsearch\SearchAdapter\QueryAwareInterface;
@@ -10,6 +11,7 @@ use Magento\Elasticsearch\SearchAdapter\QueryContainer;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Search\Dynamic\EntityStorage;
 use Psr\Log\LoggerInterface;
+use Recomdoai\Core\Helper\Connection;
 
 /**
  * Elastic search data provider
@@ -117,20 +119,21 @@ class DataProvider implements \Magento\Framework\Search\Dynamic\DataProviderInte
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        \Magento\Elasticsearch\SearchAdapter\ConnectionManager $connectionManager,
-        \Magento\Elasticsearch\Model\Adapter\FieldMapperInterface $fieldMapper,
-        \Magento\Catalog\Model\Layer\Filter\Price\Range $range,
-        \Magento\Framework\Search\Dynamic\IntervalFactory $intervalFactory,
-        \Magento\Elasticsearch\Model\Config $clientConfig,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        Connection                                                   $connectionhelper,
+        \Magento\Elasticsearch\Model\Adapter\FieldMapperInterface    $fieldMapper,
+        \Magento\Catalog\Model\Layer\Filter\Price\Range              $range,
+        \Magento\Framework\Search\Dynamic\IntervalFactory            $intervalFactory,
+        \Magento\Elasticsearch\Model\Config                          $clientConfig,
+        \Magento\Store\Model\StoreManagerInterface                   $storeManager,
         \Magento\Elasticsearch\SearchAdapter\SearchIndexNameResolver $searchIndexNameResolver,
-        $indexerId,
-        \Magento\Framework\App\ScopeResolverInterface $scopeResolver,
-        QueryContainer $queryContainer = null,
-        LoggerInterface $logger = null,
-        ?string $aggregationFieldName = null
-    ) {
-        $this->connectionManager = $connectionManager;
+                                                                     $indexerId,
+        \Magento\Framework\App\ScopeResolverInterface                $scopeResolver,
+        QueryContainer                                               $queryContainer = null,
+        LoggerInterface                                              $logger = null,
+        ?string                                                      $aggregationFieldName = null
+    )
+    {
+        $this->connecthelper = $connectionhelper;
         $this->fieldMapper = $fieldMapper;
         $this->range = $range;
         $this->intervalFactory = $intervalFactory;
@@ -166,26 +169,16 @@ class DataProvider implements \Magento\Framework\Search\Dynamic\DataProviderInte
             'std' => 0,
         ];
 
-        $query = $this->getBasicSearchQuery($entityStorage);
-
-        $fieldName = $this->fieldMapper->getFieldName($this->aggregationFieldName);
-        $query['body']['aggregations'] = [
-            'prices' => [
-                'extended_stats' => [
-                    'field' => $fieldName,
-                ],
-            ],
-        ];
+        $query = $this->queryContainer->getQuery()['body']['query']['bool']['should'][0]['match']['_search']['query'];
 
         try {
-            $queryResult = $this->connectionManager->getConnection()
-                ->query($query);
-            if (isset($queryResult['aggregations']['prices'])) {
+            $queryResult = $this->connecthelper->requestGetAPI('search/recomdoai_api/search_with_suggestions?keyword=' . $query);
+            if (isset($queryResult['data']['aggregations']['price_bucket'])) {
                 $aggregations = [
-                    'count' => $queryResult['aggregations']['prices']['count'],
-                    'max' => $queryResult['aggregations']['prices']['max'],
-                    'min' => $queryResult['aggregations']['prices']['min'],
-                    'std' => $queryResult['aggregations']['prices']['std_deviation'],
+                    'count' => $queryResult['data']['aggregations']['price_bucket']['count'],
+                    'max' => $queryResult['data']['aggregations']['price_bucket']['max'],
+                    'min' => $queryResult['data']['aggregations']['price_bucket']['min'],
+                    'std' => $queryResult['data']['aggregations']['price_bucket']['std_deviation'],
                 ];
             }
         } catch (\Exception $e) {
@@ -201,9 +194,10 @@ class DataProvider implements \Magento\Framework\Search\Dynamic\DataProviderInte
      */
     public function getInterval(
         \Magento\Framework\Search\Request\BucketInterface $bucket,
-        array $dimensions,
-        EntityStorage $entityStorage
-    ) {
+        array                                             $dimensions,
+        EntityStorage                                     $entityStorage
+    )
+    {
         $entityIds = $entityStorage->getSource();
         $fieldName = $this->fieldMapper->getFieldName($this->aggregationFieldName);
         $dimension = current($dimensions);
@@ -224,28 +218,24 @@ class DataProvider implements \Magento\Framework\Search\Dynamic\DataProviderInte
      */
     public function getAggregation(
         \Magento\Framework\Search\Request\BucketInterface $bucket,
-        array $dimensions,
-        $range,
-        EntityStorage $entityStorage
-    ) {
-        $query = $this->getBasicSearchQuery($entityStorage);
-
-        $fieldName = $this->fieldMapper->getFieldName($bucket->getField());
-        $query['body']['aggregations'] = [
-            'prices' => [
-                'histogram' => [
-                    'field' => $fieldName,
-                    'interval' => (float)$range,
-                    'min_doc_count' => 1,
-                ],
-            ],
+        array                                             $dimensions,
+                                                          $range,
+        EntityStorage                                     $entityStorage
+    )
+    {
+        $data = [
+            'ids' => $entityStorage->getSource(),
+            'interval' =>(float)$range,
+            'min_doc_count' => 1,
         ];
+
+        $jsonBody = json_encode($data);
 
         $result = [];
         try {
-            $queryResult = $this->connectionManager->getConnection()
-                ->query($query);
-            foreach ($queryResult['aggregations']['prices']['buckets'] as $bucket) {
+            $queryResult = $this->connecthelper->requestPostAPI('search/recomdoai_api/price_aggregations', $jsonBody);
+
+            foreach ($queryResult['data']['aggregations']['prices']['buckets'] as $bucket) {
                 $key = (int)($bucket['key'] / $range + 1);
                 $result[$key] = $bucket['doc_count'];
             }
@@ -297,8 +287,9 @@ class DataProvider implements \Magento\Framework\Search\Dynamic\DataProviderInte
      */
     private function getBasicSearchQuery(
         EntityStorage $entityStorage,
-        array $dimensions = []
-    ) {
+        array         $dimensions = []
+    )
+    {
         if (null !== $this->queryContainer) {
             return $this->queryContainer->getQuery();
         }
