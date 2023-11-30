@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace Recomdoai\Catalog\SearchAdapter;
 
-use Magento\Elasticsearch\SearchAdapter\Aggregation\Builder as AggregationBuilder;
+use Recomdoai\Catalog\SearchAdapter\Aggregation\Builder as AggregationBuilder;
 use Magento\Elasticsearch\SearchAdapter\QueryContainerFactory;
 use Magento\Elasticsearch\SearchAdapter\ResponseFactory;
 use Magento\Framework\Search\AdapterInterface;

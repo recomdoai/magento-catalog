@@ -154,6 +154,33 @@
         </arguments>
     </type>
 
+    <type name="Magento\Framework\Search\Dynamic\DataProviderFactory">
+        <arguments>
+            <argument name="dataProviders" xsi:type="array">
+                <item name="recomdoaisearch" xsi:type="string">Recomdoai\Catalog\SearchAdapter\Dynamic\DataProvider
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Recomdoai\Catalog\SearchAdapter\Aggregation\Builder">
+        <arguments>
+            <argument name="dataProviderContainer" xsi:type="array">
+                <item name="catalogsearch_fulltext" xsi:type="object">Recomdoai\Catalog\SearchAdapter\Dynamic\DataProvider</item>
+            </argument>
+            <argument name="aggregationContainer" xsi:type="array">
+                <item name="termBucket" xsi:type="object">Recomdoai\Catalog\SearchAdapter\Aggregation\Builder\Term</item>
+                <item name="dynamicBucket" xsi:type="object">Recomdoai\Catalog\SearchAdapter\Aggregation\Builder\Dynamic</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Recomdoai\Catalog\SearchAdapter\Dynamic\DataProvider">
+        <arguments>
+            <argument name="indexerId" xsi:type="const">\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID</argument>
+        </arguments>
+    </type>
+
 
     <!-- Product-Category Data -->
     <type name="Magento\Elasticsearch\Elasticsearch5\Model\Adapter\BatchDataMapper\CategoryFieldsProviderProxy">
