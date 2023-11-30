@@ -10,6 +10,7 @@
     <module name="Recomdoai_Catalog">
         <sequence>
             <module name="Magento_Elasticsearch"/>
+            <module name="Magento_OpenSearch"/>
             <module name="Magento_Config"/>
         </sequence>
     </module>
