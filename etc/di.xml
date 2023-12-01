@@ -111,7 +111,7 @@
     <type name="Magento\Search\Model\SearchEngine\Validator">
         <arguments>
             <argument name="engineValidators" xsi:type="array">
-                <item name="recomdoaisearch" xsi:type="object">Magento\OpenSearch\Setup\Validator</item>
+                <item name="recomdoaisearch" xsi:type="object">Recomdoai\Catalog\Setup\Validator</item>
             </argument>
         </arguments>
     </type>
