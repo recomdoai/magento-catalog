@@ -223,7 +223,7 @@
                     \Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\SpecialAttribute
                 </item>
                 <item name="price" xsi:type="object" sortOrder="30">
-                    \Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\Price
+                    \Recomdoai\Catalog\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\Price
                 </item>
                 <item name="categoryName" xsi:type="object" sortOrder="40">
                     \Magento\Elasticsearch\Model\Adapter\FieldMapper\Product\FieldProvider\FieldName\Resolver\CategoryName

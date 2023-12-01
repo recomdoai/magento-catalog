@@ -45,7 +45,7 @@ class Suggestions implements SuggestedQueriesInterface
         $searchSuggestionsCount = 20;
         $queryText = urlencode($query->getQueryText());
 
-        $result = $this->connecthelper->requestGetAPI('search/recomdoai_api/suggestions?keyword=' . $queryText);
+        $result = $this->connecthelper->requestGetAPI('search/recomdoai_api/m2_suggestions?keyword=' . $queryText);
 
         if (is_array($result) && isset($result['data'])) {
             foreach ($result['data']['suggest'] ?? [] as $suggest) {

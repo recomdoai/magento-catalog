@@ -170,9 +170,10 @@ class DataProvider implements \Magento\Framework\Search\Dynamic\DataProviderInte
         ];
 
         $query = $this->queryContainer->getQuery()['body']['query']['bool']['should'][0]['match']['_search']['query'];
+        $body = json_encode($this->queryContainer->getQuery()['body']['query']['bool']['must']);
 
         try {
-            $queryResult = $this->connecthelper->requestGetAPI('search/recomdoai_api/search_with_suggestions?keyword=' . $query);
+            $queryResult = $this->connecthelper->requestPostAPI('search/recomdoai_api/m2_search_with_suggestions?keyword=' . $query, $body);
             if (isset($queryResult['data']['aggregations']['price_bucket'])) {
                 $aggregations = [
                     'count' => $queryResult['data']['aggregations']['price_bucket']['count'],
@@ -225,7 +226,7 @@ class DataProvider implements \Magento\Framework\Search\Dynamic\DataProviderInte
     {
         $data = [
             'ids' => $entityStorage->getSource(),
-            'interval' =>(float)$range,
+            'interval' => (float)$range,
             'min_doc_count' => 1,
         ];
 
@@ -233,7 +234,7 @@ class DataProvider implements \Magento\Framework\Search\Dynamic\DataProviderInte
 
         $result = [];
         try {
-            $queryResult = $this->connecthelper->requestPostAPI('search/recomdoai_api/price_aggregations', $jsonBody);
+            $queryResult = $this->connecthelper->requestPostAPI('search/recomdoai_api/m2_price_aggregations', $jsonBody);
 
             foreach ($queryResult['data']['aggregations']['prices']['buckets'] as $bucket) {
                 $key = (int)($bucket['key'] / $range + 1);
