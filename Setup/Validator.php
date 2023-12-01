@@ -34,6 +34,7 @@ class Validator implements ValidatorInterface
             if (!isset($responseData['data']) && $responseData['data']['_id'] == '') {
                 $errors[] = "Could not validate a connection to the Search engine: Recomdoai Search";
             }
+
         } catch (\Exception $e) {
             $errors[] = 'Could not validate a connection to the Recomdoai Search. ' . $e->getMessage();
         }
