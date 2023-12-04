@@ -38,7 +38,8 @@ class Adapter implements AdapterInterface
         AggregationBuilder    $aggregationBuilder,
         QueryContainerFactory $queryContainerFactory,
         LoggerInterface       $logger
-    ) {
+    )
+    {
         $this->connecthelper = $connectionhelper;
         $this->mapper = $mapper;
         $this->responseFactory = $responseFactory;
@@ -52,14 +53,18 @@ class Adapter implements AdapterInterface
         $aggregationBuilder = $this->aggregationBuilder;
         $query = $this->mapper->buildQuery($request);
         $aggregationBuilder->setQuery($this->queryContainerFactory->create(['query' => $query]));
-        $queryText = urlencode($request->getQuery()->getShould()['search']->getValue());
+        if (isset($request->getQuery()->getShould()['search'])) {
+            $endpoint = 'search/recomdoai_api/m2_search_with_suggestions?keyword=' . urlencode($request->getQuery()->getShould()['search']->getValue());
+        } else {
+            $endpoint = 'search/recomdoai_api/m2_category';
+        }
         $body = json_encode($query['body']['query']['bool']['must']);
         try {
-            $rawResponse = $this->connecthelper->requestPostAPI('search/recomdoai_api/m2_search_with_suggestions?keyword=' . $queryText , $body);
+            $rawResponse = $this->connecthelper->requestPostAPI($endpoint, $body);
         } catch (\Exception $e) {
             $this->logger->critical($e);
             // return empty search result in case an exception is thrown from OpenSearch
-            $rawResponse = self::$emptyRawResponse;
+            $rawResponse['data'] = self::$emptyRawResponse;
         }
 
         $rawDocuments = $rawResponse['data']['hits']['hits'] ?? [];
