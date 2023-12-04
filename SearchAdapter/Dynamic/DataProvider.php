@@ -168,8 +168,10 @@ class DataProvider implements \Magento\Framework\Search\Dynamic\DataProviderInte
             'min' => 0,
             'std' => 0,
         ];
-
-        $query = $this->queryContainer->getQuery()['body']['query']['bool']['should'][0]['match']['_search']['query'];
+        $query = "";
+        if (isset($this->queryContainer->getQuery()['body']['query']['bool']['should'])) {
+            $query = $this->queryContainer->getQuery()['body']['query']['bool']['should'][0]['match']['_search']['query'];
+        }
         $body = json_encode($this->queryContainer->getQuery()['body']['query']['bool']['must']);
 
         try {
