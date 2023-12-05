@@ -53,14 +53,9 @@ class Adapter implements AdapterInterface
         $aggregationBuilder = $this->aggregationBuilder;
         $query = $this->mapper->buildQuery($request);
         $aggregationBuilder->setQuery($this->queryContainerFactory->create(['query' => $query]));
-        if (isset($request->getQuery()->getShould()['search'])) {
-            $endpoint = 'search/recomdoai_api/m2_search_with_suggestions?keyword=' . urlencode($request->getQuery()->getShould()['search']->getValue());
-        } else {
-            $endpoint = 'search/recomdoai_api/m2_category';
-        }
-        $body = json_encode($query['body']['query']['bool']['must']);
+        $body = json_encode($query);
         try {
-            $rawResponse = $this->connecthelper->requestPostAPI($endpoint, $body);
+            $rawResponse = $this->connecthelper->requestPostAPI('search/recomdoai_api/m2_search_with_suggestions', $body);
         } catch (\Exception $e) {
             $this->logger->critical($e);
             // return empty search result in case an exception is thrown from OpenSearch
