@@ -170,7 +170,7 @@ class DataProvider implements \Magento\Framework\Search\Dynamic\DataProviderInte
         ];
 
         try {
-            $queryResult = $this->connecthelper->requestPostAPI('search/recomdoai_api/m2_search_with_suggestions', json_encode($this->queryContainer->getQuery()));
+            $queryResult = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/default/products/?searchCriteria=' . urlencode(json_encode($this->queryContainer->getQuery())));
             if (isset($queryResult['data']['aggregations']['price_bucket'])) {
                 $aggregations = [
                     'count' => $queryResult['data']['aggregations']['price_bucket']['count'],
