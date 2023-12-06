@@ -84,6 +84,8 @@ class Builder
     public function initQuery(RequestInterface $request)
     {
         $searchQuery = [
+                'from' => min(self::ELASTIC_INT_MAX, $request->getFrom()),
+                'size' => $request->getSize(),
                 'sort' => $this->sortBuilder->getSort($request),
                 'query' => [],
         ];

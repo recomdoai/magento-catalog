@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Recomdoai\Catalog\SearchAdapter;
 
+use Magento\Store\Model\StoreManagerInterface;
 use Recomdoai\Catalog\SearchAdapter\Aggregation\Builder as AggregationBuilder;
 use Magento\Elasticsearch\SearchAdapter\QueryContainerFactory;
 use Magento\Elasticsearch\SearchAdapter\ResponseFactory;
@@ -37,6 +38,7 @@ class Adapter implements AdapterInterface
         ResponseFactory       $responseFactory,
         AggregationBuilder    $aggregationBuilder,
         QueryContainerFactory $queryContainerFactory,
+        StoreManagerInterface $storeManager,
         LoggerInterface       $logger
     )
     {
@@ -45,6 +47,7 @@ class Adapter implements AdapterInterface
         $this->responseFactory = $responseFactory;
         $this->aggregationBuilder = $aggregationBuilder;
         $this->queryContainerFactory = $queryContainerFactory;
+        $this->storeManager = $storeManager;
         $this->logger = $logger;
     }
 
@@ -56,7 +59,7 @@ class Adapter implements AdapterInterface
 
         $queryString = json_encode($query);
         try {
-            $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/default/products/?searchCriteria=' . urlencode($queryString));
+            $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/' . $this->storeManager->getStore()->getCode() . '/products/?searchCriteria=' . urlencode($queryString));
         } catch (\Exception $e) {
             $this->logger->critical($e);
             // return empty search result in case an exception is thrown from OpenSearch
