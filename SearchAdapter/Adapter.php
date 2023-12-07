@@ -59,7 +59,7 @@ class Adapter implements AdapterInterface
 
         $queryString = json_encode($query);
         try {
-            $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/' . $this->storeManager->getStore()->getCode() . '/products/?searchCriteria=' . urlencode($queryString));
+            $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/' . $this->storeManager->getStore()->getCode() . '/search/?searchCriteria=' . urlencode($queryString));
         } catch (\Exception $e) {
             $this->logger->critical($e);
             // return empty search result in case an exception is thrown from OpenSearch
