@@ -30,7 +30,8 @@ class Suggestions implements SuggestedQueriesInterface
         LoggerInterface                  $logger = null,
         ?GetSuggestionFrequencyInterface $getSuggestionFrequency = null,
         array                            $responseErrorExceptionList = []
-    ) {
+    )
+    {
         $this->connecthelper = $connectionhelper;
         $this->queryResultFactory = $queryResultFactory;
         $this->scopeConfig = $scopeConfig;
@@ -43,6 +44,7 @@ class Suggestions implements SuggestedQueriesInterface
     private function getSuggestions(QueryInterface $query)
     {
         $searchSuggestionsCount = 20;
+        $suggestions = [];
         $queryText = urlencode($query->getQueryText());
 
         $result = $this->connecthelper->requestGetAPI('search/recomdoai_api/m2_suggestions?keyword=' . $queryText);
