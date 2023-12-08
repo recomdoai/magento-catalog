@@ -105,15 +105,15 @@ class Sort
                     $attribute,
                     ['type' => FieldMapperInterface::TYPE_SORT]
                 );
-                $fieldName .= '.' . $suffix;
+                $fieldName;
             }
             if ($attribute->isComplexType() && $attribute->isSortable()) {
-                $fieldName .= '_value';
+                $fieldName;
                 $suffix = $this->fieldNameResolver->getFieldName(
                     $attribute,
                     ['type' => FieldMapperInterface::TYPE_SORT]
                 );
-                $fieldName .= '.' . $suffix;
+                $fieldName;
             }
             $sorts[] = [
                 $fieldName => [
