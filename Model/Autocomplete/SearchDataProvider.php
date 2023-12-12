@@ -2,6 +2,7 @@
 
 namespace Recomdoai\Catalog\Model\Autocomplete;
 
+use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Block\Product\Context;
 use Magento\Catalog\Helper\Image;
 use Magento\Catalog\Helper\Product;
@@ -74,14 +75,15 @@ class SearchDataProvider extends \Magento\CatalogSearch\Model\Autocomplete\DataP
 
     public function __construct
     (
-        QueryFactory           $queryFactory,
-        ItemFactory            $itemFactory,
-        ScopeConfig            $scopeConfig,
-        Context                $context,
-        PriceCurrencyInterface $priceCurrency,
-        Resolver               $layerResolver,
-        StoreManagerInterface  $storeManager,
-        Connection             $connectionhelper
+        QueryFactory               $queryFactory,
+        ItemFactory                $itemFactory,
+        ScopeConfig                $scopeConfig,
+        Context                    $context,
+        PriceCurrencyInterface     $priceCurrency,
+        Resolver                   $layerResolver,
+        StoreManagerInterface      $storeManager,
+        Connection                 $connectionhelper,
+        ProductRepositoryInterface $productRepository
     )
     {
         $this->_priceCurrency = $priceCurrency;
@@ -90,16 +92,30 @@ class SearchDataProvider extends \Magento\CatalogSearch\Model\Autocomplete\DataP
         $this->_imageHelper = $context->getImageHelper();
         $this->storeManager = $storeManager;
         $this->connecthelper = $connectionhelper;
+        $this->productRepository = $productRepository;
         parent::__construct($queryFactory, $itemFactory, $scopeConfig);
     }
 
-
-    protected function _getProductCollection()
+    public function initQuery()
     {
-        if (null === $this->_productCollection) {
-            $this->_productCollection = $this->_layout->getBlock('search_result_list')->getLoadedProductCollection();
-        }
-        return $this->_productCollection;
+        $searchQuery = [
+            'from' => 0,
+            'size' => 5,
+            'sort' => [],
+            'query' => [],
+        ];
+        $searchQuery['sort'][0]['relevance']['order'] = "desc";
+        $searchQuery['query']['bool']['must']['0']['terms']['visibility'][0] = "3";
+        $searchQuery['query']['bool']['must']['0']['terms']['visibility'][1] = "4";
+        $searchQuery['query']['bool']['should']['search'] = $this->queryFactory->get()->getQueryText();
+        return json_encode($searchQuery);
+    }
+
+    protected function getProductCollection()
+    {
+        $queryString = $this->initQuery();
+        $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/' . $this->storeManager->getStore()->getCode() . '/search/?searchCriteria=' . urlencode($queryString));
+        return $rawResponse;
     }
 
     private function getCategorySuggestions($query)
@@ -154,20 +170,24 @@ class SearchDataProvider extends \Magento\CatalogSearch\Model\Autocomplete\DataP
      */
     public function getItems()
     {
-        $collection = $this->_getProductCollection();
+        $collection = $this->getProductCollection();
         $suggetionCategory = $this->getCategorySuggestions($this->queryFactory->get()->getQueryText());
 
         $results = [];
-        foreach ($collection as $product) {
-            /** @var \Magento\Catalog\Model\Product $product */
-            $results['products'][$product->getId()] = [
-                'id' => $product->getId(),
-                'name' => $product->getName(),
-                'price' => $this->_getProductPrice($product),
-                'reviews' => $this->_getProductReviews($product),
-                'image' => $this->_getImageUrl($product),
-                'url' => $product->getProductUrl(),
-            ];
+        if (isset($collection['data']) && !empty($collection['data']['hits'])) {
+            foreach ($collection['data']['hits']['hits'] as $id) {
+                $product = $this->productRepository->getById($id['fields']['_id'][0]);
+                $results['products'][$product->getId()] = [
+                    'id' => $product->getId(),
+                    'name' => $product->getName(),
+                    'price' => $this->_getProductPrice($product),
+                    'reviews' => $this->_getProductReviews($product),
+                    'image' => $this->_getImageUrl($product),
+                    'url' => $product->getProductUrl(),
+                ];
+            }
+        } else {
+            $results['products'] = [];
         }
         $results['categories'] = $suggetionCategory;
         return $results;

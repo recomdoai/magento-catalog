@@ -51,7 +51,7 @@ class Suggest extends \Magento\Search\Controller\Ajax\Suggest
         return [
             'results' => $this->_limitResponseData($collection),
             'info' => [
-                'size' => count($collection),
+                'size' => count($collection['products']),
                 'url' => $this->_searchHelper->getResultUrl($query->getQueryText())
             ],
         ];
