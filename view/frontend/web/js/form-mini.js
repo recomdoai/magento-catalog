@@ -8,7 +8,7 @@ define([
     'use strict';
 
     /**
-     * Check wether the incoming string is not empty or if doesn't consist of spaces.
+     * Check whether the incoming string is not empty or if it doesn't consist of spaces.
      *
      * @param {String} value - Value to check.
      * @returns {Boolean}
@@ -24,8 +24,8 @@ define([
             minSearchLength: 2,
             responseFieldElements: 'ul li',
             selectClass: 'selected',
-            template_product_suggetion:
-                '<li onclick="setLocation(\'<%- data.url %>\');" class="<%- data.row_class %>" id="qs-option-<%- data.index %>" role="option">' +
+            template_product_suggestion:
+                '<li onclick="setLocation(\'<%- data.url %>\');" class="<%- data.row_class %> product-suggestion" id="qs-option-<%- data.index %>" role="option">' +
                 '<div class="qs-option-image">' +
                 '<a href="<%- data.url %>" title="<%- data.name %>">' +
                 '<img src="<%- data.image %>" title="<%- data.name %>" />' +
@@ -39,8 +39,8 @@ define([
                 '<span class="qs-option-price"><%- data.price %></span>' +
                 '</div>' +
                 '</li>',
-            template_category_suggetion:
-                '<li onclick="setLocation(\'<%- data.category_name %>\');" class="<%- data.category_name %>" id="qs-option-<%- data.index %>" role="option">' +
+            template_category_suggestion:
+                '<li onclick="setLocation(\'<%- data.url %>\');" class="<%- data.category_name %> category-suggestion" id="qs-option-<%- data.index %>" role="option">' +
                 '<div class="qs-option-description">' +
                 '<span class="qs-option-title">' +
                 '<a href="<%- data.url %>" title="<%- data.category_name %>"><%- data.category_name %></a>' +
@@ -57,15 +57,12 @@ define([
                 '</li>',
             submitBtn: 'button[type="submit"]',
             closeBtn: 'button.close',
-            searchLabel: '[data-role=minisearch-label]'
+            searchLabel: '[data-role=minisearch-label]',
+            template_product_suggestion_selector: '#product-suggestion',
+            template_category_suggestion_selector: '#category-suggestion',
+            destinationSelector: '#search_autocomplete'
         },
 
-        /**
-         * Object creation
-         *
-         * @private
-         * @return void
-         */
         _create: function () {
             this.responseList = {
                 indexList: null,
@@ -103,33 +100,14 @@ define([
             }, this));
         },
 
-        /**
-         * Get first visible element
-         *
-         * @private
-         * @return {Element} The first element in the suggestion list.
-         */
         _getFirstVisibleElement: function () {
             return this.responseList.indexList ? this.responseList.indexList.first() : false;
         },
 
-        /**
-         * Get last element
-         *
-         * @private
-         * @return {Element} The last element in the suggestion list.
-         */
         _getLastElement: function () {
             return this.responseList.indexList ? this.responseList.indexList.last() : false;
         },
 
-        /**
-         * Update aria has popup
-         *
-         * @private
-         * @param {Boolean} show Set attribute aria-haspopup to "true/false" for element.
-         * @return void
-         */
         _updateAriaHasPopup: function (show) {
             if (show) {
                 this.element.attr('aria-haspopup', 'true');
@@ -138,13 +116,6 @@ define([
             }
         },
 
-        /**
-         * Clears the item selected from the suggestion list and resets the suggestion list.
-         *
-         * @private
-         * @param {Boolean} all - Controls whether to clear the suggestion list.
-         * @return void
-         */
         _resetResponseList: function (all) {
             this.responseList.selected = null;
 
@@ -153,14 +124,6 @@ define([
             }
         },
 
-        /**
-         * Executes when the search box is submitted. Sets the search input field to the
-         * value of the selected item.
-         *
-         * @private
-         * @param {Event} e - The submit event
-         * @return void
-         */
         _onSubmit: function (e) {
             var value = this.element.val();
 
@@ -173,14 +136,6 @@ define([
             }
         },
 
-        /**
-         * Executes when keys are pressed in the search input field. Performs specific actions
-         * depending on which keys are pressed.
-         *
-         * @private
-         * @param {Event} e - The key down event
-         * @return {Boolean} Default return type for any unhandled keys
-         */
         _onKeyDown: function (e) {
             var keyCode = e.keyCode || e.which;
 
@@ -240,22 +195,11 @@ define([
             }
         },
 
-        /**
-         * Executes when the value of the search input field changes. Executes a GET request
-         * to populate a suggestion list based on entered text. Handles click (select), hover,
-         * and mouseout events on the populated suggestion list dropdown.
-         *
-         * @private
-         * @return void
-         */
         _onPropertyChange: function () {
             var searchField = this.element,
-                source_product_suggetion = this.options.template_product_suggetion,
-                source_category_suggetion = this.options.template_category_suggetion,
-                resultsSource = this.options.resultsTemplate,
-                template_product_suggetion = mageTemplate(source_product_suggetion),
-                template_category_suggetion = mageTemplate(source_category_suggetion),
-                resultsTemplate = mageTemplate(resultsSource),
+                templateProductSuggestion = mageTemplate(this.options.template_product_suggestion),
+                templateCategorySuggestion = mageTemplate(this.options.template_category_suggestion),
+                resultsTemplate = mageTemplate(this.options.resultsTemplate),
                 dropdown = $('<ul role="listbox"></ul>'),
                 value = this.element.val();
             this.submitBtn.disabled = isEmpty(value);
@@ -263,7 +207,7 @@ define([
             if (value.length >= parseInt(this.options.minSearchLength, 10)) {
                 searchField.closest('form').addClass('loading');
                 this.submitBtn.disabled = true;
-                $.get(this.options.url, {q: value}, $.proxy(function (data) {
+                $.get(this.options.url, { q: value }, $.proxy(function (data) {
                     this.submitBtn.disabled = false;
                     // Add full result link
                     var html = resultsTemplate({
@@ -271,19 +215,21 @@ define([
                     });
                     dropdown.append(html);
 
+                    // Append category suggestions
                     if (data.results.categories.length > 0) {
                         $.each(data.results.categories, function (index, element) {
                             element.index = index;
-                            var html = template_category_suggetion({
+                            var html = templateCategorySuggestion({
                                 data: element
                             });
                             dropdown.append(html);
                         });
                     }
 
+                    // Append product suggestions
                     $.each(data.results.products, function (index, element) {
                         element.index = index;
-                        var html = template_product_suggetion({
+                        var html = templateProductSuggestion({
                             data: element
                         });
                         dropdown.append(html);
