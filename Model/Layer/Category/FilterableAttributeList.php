@@ -5,13 +5,13 @@
  * See COPYING.txt for license details.
  */
 
-namespace Recomdoai\Catalog\Model\Layer\Search;
+namespace Recomdoai\Catalog\Model\Layer\Category;
 
 use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use Recomdoai\Core\Helper\Connection;
 
-class FilterableAttributeList extends \Magento\Catalog\Model\Layer\Search\FilterableAttributeList
+class FilterableAttributeList extends \Magento\Catalog\Model\Layer\Category\FilterableAttributeList
 {
 
     public function __construct(
