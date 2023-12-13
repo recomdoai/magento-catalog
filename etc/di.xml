@@ -166,18 +166,24 @@
     <type name="Recomdoai\Catalog\SearchAdapter\Aggregation\Builder">
         <arguments>
             <argument name="dataProviderContainer" xsi:type="array">
-                <item name="catalogsearch_fulltext" xsi:type="object">Recomdoai\Catalog\SearchAdapter\Dynamic\DataProvider</item>
+                <item name="catalogsearch_fulltext" xsi:type="object">
+                    Recomdoai\Catalog\SearchAdapter\Dynamic\DataProvider
+                </item>
             </argument>
             <argument name="aggregationContainer" xsi:type="array">
-                <item name="termBucket" xsi:type="object">Recomdoai\Catalog\SearchAdapter\Aggregation\Builder\Term</item>
-                <item name="dynamicBucket" xsi:type="object">Recomdoai\Catalog\SearchAdapter\Aggregation\Builder\Dynamic</item>
+                <item name="termBucket" xsi:type="object">Recomdoai\Catalog\SearchAdapter\Aggregation\Builder\Term
+                </item>
+                <item name="dynamicBucket" xsi:type="object">
+                    Recomdoai\Catalog\SearchAdapter\Aggregation\Builder\Dynamic
+                </item>
             </argument>
         </arguments>
     </type>
 
     <type name="Recomdoai\Catalog\SearchAdapter\Dynamic\DataProvider">
         <arguments>
-            <argument name="indexerId" xsi:type="const">\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID</argument>
+            <argument name="indexerId" xsi:type="const">\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID
+            </argument>
         </arguments>
     </type>
 
@@ -290,5 +296,11 @@
         </arguments>
     </type>
 
+    <!-- Preference -->
+    <preference for="Magento\CatalogSearch\Model\Autocomplete\DataProvider"
+                type="Recomdoai\Catalog\Model\Autocomplete\SearchDataProvider"/>
+    <preference for="Magento\Search\Controller\Ajax\Suggest" type="Recomdoai\Catalog\Controller\Search\Ajax\Suggest"/>
+    <preference for="Magento\Catalog\Model\Layer\Search\FilterableAttributeList" type="Recomdoai\Catalog\Model\Layer\Search\FilterableAttributeList" />
+    <preference for="Magento\Catalog\Model\Layer\Category\FilterableAttributeList" type="Recomdoai\Catalog\Model\Layer\Category\FilterableAttributeList" />
 
 </config>
