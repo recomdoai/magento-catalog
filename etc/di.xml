@@ -300,5 +300,6 @@
     <preference for="Magento\CatalogSearch\Model\Autocomplete\DataProvider"
                 type="Recomdoai\Catalog\Model\Autocomplete\SearchDataProvider"/>
     <preference for="Magento\Search\Controller\Ajax\Suggest" type="Recomdoai\Catalog\Controller\Search\Ajax\Suggest"/>
+    <preference for="Magento\Catalog\Model\Layer\Search\FilterableAttributeList" type="Recomdoai\Catalog\Model\Layer\Search\FilterableAttributeList" />
 
 </config>
