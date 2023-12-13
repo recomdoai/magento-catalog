@@ -200,42 +200,59 @@ define([
                 templateProductSuggestion = mageTemplate(this.options.template_product_suggestion),
                 templateCategorySuggestion = mageTemplate(this.options.template_category_suggestion),
                 resultsTemplate = mageTemplate(this.options.resultsTemplate),
-                dropdown = $('<ul role="listbox"></ul>'),
+                info = $('<div class="info"></div>'),
                 value = this.element.val();
             this.submitBtn.disabled = isEmpty(value);
 
             if (value.length >= parseInt(this.options.minSearchLength, 10)) {
                 searchField.closest('form').addClass('loading');
                 this.submitBtn.disabled = true;
-                $.get(this.options.url, { q: value }, $.proxy(function (data) {
+                $.get(this.options.url, {q: value}, $.proxy(function (data) {
                     this.submitBtn.disabled = false;
                     // Add full result link
                     var html = resultsTemplate({
                         data: data.info
                     });
-                    dropdown.append(html);
+                    info.append(html);
 
-                    // Append category suggestions
-                    if (data.results.categories.length > 0) {
-                        $.each(data.results.categories, function (index, element) {
-                            element.index = index;
-                            var html = templateCategorySuggestion({
-                                data: element
-                            });
-                            dropdown.append(html);
+// Append category suggestions
+                    var categorySuggestions = $('<div class="category-suggestions"></div>');
+                    $.each(data.results.categories, function (index, element) {
+                        element.index = index;
+                        var html = templateCategorySuggestion({
+                            data: element
                         });
-                    }
+                        categorySuggestions.append(html);
+                    });
 
-                    // Append product suggestions
+// Append product suggestions
+                    var productSuggestions = $('<div class="product-suggestions"></div>');
                     $.each(data.results.products, function (index, element) {
                         element.index = index;
                         var html = templateProductSuggestion({
                             data: element
                         });
-                        dropdown.append(html);
+                        productSuggestions.append(html);
                     });
 
-                    this.responseList.indexList = this.autoComplete.html(dropdown)
+// Add title for category suggestions
+                    var categoryTitle = $('<div class="category-title">Category Suggestions</div>');
+
+// Add title for product suggestions
+                    var productTitle = $('<div class="product-title">Product Suggestions</div>');
+
+// Add title for info
+                    var infoTitle = $('<div class="info-title">Info</div>');
+
+
+// Modify the structure to include titles and a row for all suggestions
+                    var suggestionsRow = $('<div class="row"></div>').append(
+                        $('<div class="custom-left-column"></div>').append(productTitle, productSuggestions),
+                        $('<div class="custom-right-column"></div>').append(infoTitle, info),
+                        $('<div class="custom-right-column"></div>').append(categoryTitle, categorySuggestions)
+                    );
+
+                    this.responseList.indexList = this.autoComplete.html(suggestionsRow)
                         .show()
                         .find(this.options.responseFieldElements + ':visible');
 

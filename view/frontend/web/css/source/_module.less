@@ -1,23 +1,100 @@
+/* Center the search block horizontally with a minimum width of 600px */
 .block-search {
-    margin: 0 auto; /* Center the block horizontally */
+    margin: 0 auto;
     min-width: 600px;
     float: none !important;
 }
 
+/* Ensure that the search input has no clear styles applied */
 .block-search .control {
     clear: none !important;
 }
 
+/* Background color for the autocomplete suggestions */
+.search-autocomplete {
+    background-color: white;
+}
+
+/* Styling for each product suggestion item */
 .product-suggestion {
-    width: 48%; /* Adjust the width based on your design */
+    width: 48%;
     display: inline-block;
     box-sizing: border-box;
     padding: 10px;
     text-align: center;
     vertical-align: top;
-    margin: 0 1%; /* Add margin for spacing between items */
+    margin: 0 1%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
 
+/* Clear left after every odd-numbered product suggestion */
 .product-suggestion:nth-child(2n+1) {
     clear: left;
+}
+
+/* Custom styling for the left column (col-sm-8) */
+.custom-left-column {
+    width: 66.66666667%;
+    float: left;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+/* Custom styling for the right column (col-sm-4) */
+.custom-right-column {
+    width: 33.33333333%;
+    float: left;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+/* Additional styling for better spacing and appearance */
+.product-suggestion a {
+    text-decoration: none; /* Remove underlines from product links */
+    color: #333; /* Set the color of the product names */
+}
+
+.product-suggestion img {
+    max-width: 100%; /* Ensure images don't exceed the width of their container */
+}
+
+/* Remove list-style-type (dots) from all lists */
+.product-suggestions,
+.category-suggestions,
+.row {
+    list-style-type: none;
+}
+
+/* Add some spacing between the product suggestions */
+.product-suggestion {
+    margin-bottom: 15px;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .custom-left-column,
+    .custom-right-column,
+    .product-suggestion {
+        width: 100%; /* Make items full width on smaller screens */
+        float: none;
+    }
+}
+
+/* Style for the Close button in the quick search */
+#btn-quicksearch-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: red; /* Red background color */
+    border: none; /* Remove the border */
+    color: #fff; /* Text color */
+    font-size: 16px; /* Adjust the font size */
+    padding: 5px 10px; /* Padding for inner space */
+    cursor: pointer; /* Add cursor pointer on hover */
+    outline: none; /* Remove the default focus outline */
+}
+
+#btn-quicksearch-close:hover {
+    background-color: darkred; /* Darker red on hover */
 }
