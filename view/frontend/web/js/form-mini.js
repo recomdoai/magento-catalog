@@ -40,16 +40,16 @@ define([
                 '</div>' +
                 '</li>',
             template_category_suggestion:
-                '<li onclick="setLocation(\'<%- data.url %>\');" class="<%- data.category_name %> category-suggestion" id="qs-option-<%- data.index %>" role="option">' +
+                '<li onclick="setLocation(\'<%- data.category_url %>\');" class="<%- data.category_name %> category-suggestion" id="qs-option-<%- data.index %>" role="option">' +
                 '<div class="qs-option-description">' +
                 '<span class="qs-option-title">' +
-                '<a href="<%- data.url %>" title="<%- data.category_name %>"><%- data.category_name %></a>' +
+                '<a href="<%- data.category_url %>" title="<%- data.category_name %>"><%- data.category_name %></a>' +
                 '</span>' +
                 '</div>' +
                 '</li>',
             resultsTemplate:
                 '<li class="full-search">' +
-                '<a href="<%- data.url %>" title="' + $.mage.__('View full list') + '">' +
+                '<a href="<%- data.category_url %>" title="' + $.mage.__('View full list') + '">' +
                 '<span>' + $.mage.__('View All Results') + ': <%- data.size %></span>' +
                 '</a>' +
                 '<button id="btn-quicksearch-close" class="action close" data-bind="attr: { title: $t(\'Close\') }" data-action="close" type="button" title="' + $.mage.__('Close') + '">' +
