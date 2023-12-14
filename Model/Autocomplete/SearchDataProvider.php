@@ -165,7 +165,6 @@ class SearchDataProvider extends \Magento\CatalogSearch\Model\Autocomplete\DataP
                     'id' => $product->getId(),
                     'name' => $product->getName(),
                     'price' => $this->_getProductPrice($product),
-                    'reviews' => $this->_getProductReviews($product),
                     'image' => $this->_getImageUrl($product),
                     'url' => $product->getProductUrl(),
                 ];

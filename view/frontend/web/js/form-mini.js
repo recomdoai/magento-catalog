@@ -7,12 +7,6 @@ define([
 ], function ($, _, mageTemplate) {
     'use strict';
 
-    /**
-     * Check whether the incoming string is not empty or if it doesn't consist of spaces.
-     *
-     * @param {String} value - Value to check.
-     * @returns {Boolean}
-     */
     function isEmpty(value) {
         return (value.length === 0) || (value === null) || /^\s+$/.test(value);
     }
@@ -21,7 +15,7 @@ define([
         options: {
             timeout: 1500,
             autocomplete: 'off',
-            minSearchLength: 2,
+            minSearchLength: 1,
             responseFieldElements: 'ul li',
             selectClass: 'selected',
             template_product_suggestion:
@@ -35,8 +29,6 @@ define([
                 '<span class="qs-option-title">' +
                 '<a href="<%- data.url %>" title="<%- data.name %>"><%- data.name %></a>' +
                 '</span>' +
-                '<% if (data.reviews) { %><div class="qs-option-reviews"><%= data.reviews %></div><% } %>' +
-                '<span class="qs-option-price"><%- data.price %></span>' +
                 '</div>' +
                 '</li>',
             template_category_suggestion:
@@ -215,7 +207,6 @@ define([
                     });
                     info.append(html);
 
-// Append category suggestions
                     var categorySuggestions = $('<div class="category-suggestions"></div>');
                     $.each(data.results.categories, function (index, element) {
                         element.index = index;
@@ -225,7 +216,6 @@ define([
                         categorySuggestions.append(html);
                     });
 
-// Append product suggestions
                     var productSuggestions = $('<div class="product-suggestions"></div>');
                     $.each(data.results.products, function (index, element) {
                         element.index = index;
@@ -235,23 +225,17 @@ define([
                         productSuggestions.append(html);
                     });
 
-// Add title for category suggestions
                     var categoryTitle = $('<div class="category-title">Category Suggestions</div>');
 
-// Add title for product suggestions
                     var productTitle = $('<div class="product-title">Product Suggestions</div>');
 
-// Add title for info
                     var infoTitle = $('<div class="info-title">Info</div>');
 
-
-// Modify the structure to include titles and a row for all suggestions
                     var suggestionsRow = $('<div class="row"></div>').append(
                         $('<div class="custom-left-column"></div>').append(productTitle, productSuggestions),
                         $('<div class="custom-right-column"></div>').append(infoTitle, info),
                         $('<div class="custom-right-column"></div>').append(categoryTitle, categorySuggestions)
                     );
-
                     this.responseList.indexList = this.autoComplete.html(suggestionsRow)
                         .show()
                         .find(this.options.responseFieldElements + ':visible');
