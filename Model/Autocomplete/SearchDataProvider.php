@@ -96,25 +96,10 @@ class SearchDataProvider extends \Magento\CatalogSearch\Model\Autocomplete\DataP
         parent::__construct($queryFactory, $itemFactory, $scopeConfig);
     }
 
-    public function initQuery()
-    {
-        $searchQuery = [
-            'from' => 0,
-            'size' => 5,
-            'sort' => [],
-            'query' => [],
-        ];
-        $searchQuery['sort'][0]['relevance']['order'] = "desc";
-        $searchQuery['query']['bool']['must']['0']['terms']['visibility'][0] = "3";
-        $searchQuery['query']['bool']['must']['0']['terms']['visibility'][1] = "4";
-        $searchQuery['query']['bool']['should']['search'] = $this->queryFactory->get()->getQueryText();
-        return json_encode($searchQuery);
-    }
 
     protected function getProductCollection()
     {
-        $queryString = $this->initQuery();
-        $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/' . $this->storeManager->getStore()->getCode() . '/search/?searchCriteria=' . urlencode($queryString));
+        $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/' . $this->storeManager->getStore()->getCode() . '/autocomplete/?keyword=' . $this->queryFactory->get()->getQueryText());
         return $rawResponse;
     }
 
@@ -171,17 +156,15 @@ class SearchDataProvider extends \Magento\CatalogSearch\Model\Autocomplete\DataP
     public function getItems()
     {
         $collection = $this->getProductCollection();
-        $suggetionCategory = $this->getCategorySuggestions($this->queryFactory->get()->getQueryText());
 
         $results = [];
-        if (isset($collection['data']) && !empty($collection['data']['hits'])) {
-            foreach ($collection['data']['hits']['hits'] as $id) {
-                $product = $this->productRepository->getById($id['fields']['_id'][0]);
+        if (isset($collection['data']) && !empty($collection['data']['main_results'])) {
+            foreach ($collection['data']['main_results'] as $product) {
+                $product = $this->productRepository->getById($product['id']);
                 $results['products'][$product->getId()] = [
                     'id' => $product->getId(),
                     'name' => $product->getName(),
                     'price' => $this->_getProductPrice($product),
-                    'reviews' => $this->_getProductReviews($product),
                     'image' => $this->_getImageUrl($product),
                     'url' => $product->getProductUrl(),
                 ];
@@ -189,7 +172,12 @@ class SearchDataProvider extends \Magento\CatalogSearch\Model\Autocomplete\DataP
         } else {
             $results['products'] = [];
         }
-        $results['categories'] = $suggetionCategory;
+        if (isset($collection['data']) && !empty($collection['data']['category_results'])) {
+            $results['categories'] = $collection['data']['category_results'];
+        } else {
+            $results['categories'] = [];
+        }
+
         return $results;
     }
 }
