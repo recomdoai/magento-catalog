@@ -26,6 +26,7 @@ define([
                 '<span class="qs-option-title">' +
                 '<a href="<%- data.url %>" title="<%- data.name %>"><%- data.name %></a>' +
                 '</span>' +
+                '<span class="qs-option-price"><%- data.price %></span>' +
                 '</div>' +
                 '</li>',
             template_category_suggestion:
