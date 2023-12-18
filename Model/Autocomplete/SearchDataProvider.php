@@ -99,7 +99,8 @@ class SearchDataProvider extends \Magento\CatalogSearch\Model\Autocomplete\DataP
 
     protected function getProductCollection()
     {
-        $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/' . $this->storeManager->getStore()->getCode() . '/autocomplete/?keyword=' . $this->queryFactory->get()->getQueryText());
+        $queryParams = urlencode($this->queryFactory->get()->getQueryText());
+        $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/' . $this->storeManager->getStore()->getCode() . '/autocomplete/?keyword=' . $queryParams);
         return $rawResponse;
     }
 
