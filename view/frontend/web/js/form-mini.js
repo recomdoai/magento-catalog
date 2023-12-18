@@ -38,20 +38,12 @@ define([
                 '</div>' +
                 '</li>',
             template_word_suggestion:
-                '<li onclick="setLocation(\'<%- data.suggestion_text %>\');" class="<%- data.suggestion_text %> category-suggestion" id="qs-option-<%- data.index %>" role="option">' +
+                '<li onclick="setLocation(\catalogsearch/result/?q=<%- data.suggestion_text %>\);" class="<%- data.suggestion_text %> category-suggestion" id="qs-option-<%- data.index %>" role="option">' +
                 '<div class="qs-option-description">' +
                 '<span class="qs-option-title">' +
-                '<a href="<%- data.suggestion_text %>" title="<%- data.suggestion_text %>"><%- data.suggestion_text %></a>' +
+                '<a href="\catalogsearch/result/?q=<%- data.suggestion_text %>\" title="<%- data.suggestion_text %>"><%- data.suggestion_text %></a>' +
                 '</span>' +
                 '</div>' +
-                '</li>',
-            resultsTemplate:
-                '<li class="full-search">' +
-                '<a href="<%- data.category_url %>" title="' + $.mage.__('View full list') + '">' +
-                '<span>' + $.mage.__('View All Results') + ': <%- data.size %></span>' +
-                '</a>' +
-                '<button id="btn-quicksearch-close" class="action close" data-bind="attr: { title: $t(\'Close\') }" data-action="close" type="button" title="' + $.mage.__('Close') + '">' +
-                '</button>' +
                 '</li>',
             submitBtn: 'button[type="submit"]',
             closeBtn: 'button.close',
@@ -100,8 +92,6 @@ define([
                 templateProductSuggestion = mageTemplate(this.options.template_product_suggestion),
                 templateCategorySuggestion = mageTemplate(this.options.template_category_suggestion),
                 templateWordSuggestion = mageTemplate(this.options.template_word_suggestion),
-                resultsTemplate = mageTemplate(this.options.resultsTemplate),
-                info = $('<div class="info"></div>'),
                 value = this.element.val();
 
             this.submitBtn.disabled = isEmpty(value);
@@ -111,11 +101,6 @@ define([
             $.get(this.options.url, {q: value}, $.proxy(function (data) {
 
                 this.submitBtn.disabled = false;
-                // Add full result link
-                var html = resultsTemplate({
-                    data: data.info
-                });
-                info.append(html);
 
                 var categorySuggestions = $('<div class="category-suggestions"></div>');
                 $.each(data.results.categories, function (index, element) {
@@ -146,12 +131,10 @@ define([
 
                 var categoryTitle = $('<div class="category-title">Category Suggestions</div>');
                 var productTitle = $('<div class="product-title">Product Suggestions</div>');
-                var infoTitle = $('<div class="info-title">Info</div>');
-                var wordTitle = $('<div class="info-word">Suggestions Keywords</div>');
+                var wordTitle = $('<div class="word-title">Suggestions Keywords</div>');
 
                 var suggestionsRow = $('<div class="row"></div>').append(
                     $('<div class="custom-left-column"></div>').append(productTitle, productSuggestions),
-                    $('<div class="custom-right-column"></div>').append(infoTitle, info),
                     $('<div class="custom-right-column"></div>').append(categoryTitle, categorySuggestions),
                     $('<div class="custom-right-column"></div>').append(wordTitle, wordSuggestions)
                 );
