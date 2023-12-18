@@ -104,17 +104,6 @@ class SearchDataProvider extends \Magento\CatalogSearch\Model\Autocomplete\DataP
         return $rawResponse;
     }
 
-    private function getCategorySuggestions($query)
-    {
-        $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/' . $this->storeManager->getStore()->getCode() . '/category_search/?searchCriteria=' . $query);
-
-        if (!isset($rawResponse['data']) || empty($rawResponse['data'])) {
-            $rawResponse['data'] = [];
-        }
-
-        return $rawResponse['data'];
-    }
-
     /**
      * Get product price
      *
@@ -177,6 +166,11 @@ class SearchDataProvider extends \Magento\CatalogSearch\Model\Autocomplete\DataP
             $results['categories'] = $collection['data']['category_results'];
         } else {
             $results['categories'] = [];
+        }
+        if (isset($collection['data']) && !empty($collection['data']['suggestions'])) {
+            $results['suggestions'] = $collection['data']['suggestions'];
+        } else {
+            $results['suggestions'] = [];
         }
 
         return $results;
