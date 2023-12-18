@@ -38,10 +38,10 @@ define([
                 '</div>' +
                 '</li>',
             template_word_suggestion:
-                '<li onclick="setLocation(\catalogsearch/result/?q=<%- data.suggestion_text %>\);" class="<%- data.suggestion_text %> category-suggestion" id="qs-option-<%- data.index %>" role="option">' +
+                '<li onclick="setLocation(\'/catalogsearch/result/?q=<%- data.suggestion_text %>\');" class="<%- data.suggestion_text %> category-suggestion" id="qs-option-<%- data.index %>" role="option">' +
                 '<div class="qs-option-description">' +
                 '<span class="qs-option-title">' +
-                '<a href="\catalogsearch/result/?q=<%- data.suggestion_text %>\" title="<%- data.suggestion_text %>"><%- data.suggestion_text %></a>' +
+                '<a href="\'/catalogsearch/result/?q=<%- data.suggestion_text %>\'" title="<%- data.suggestion_text %>"><%- data.suggestion_text %></a>' +
                 '</span>' +
                 '</div>' +
                 '</li>',
