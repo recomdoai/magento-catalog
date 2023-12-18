@@ -48,10 +48,11 @@ class Mapper
      * @param FilterBuilder $filterBuilder
      */
     public function __construct(
-        QueryBuilder $queryBuilder,
+        QueryBuilder      $queryBuilder,
         MatchQueryBuilder $matchQueryBuilder,
-        FilterBuilder $filterBuilder
-    ) {
+        FilterBuilder     $filterBuilder
+    )
+    {
         $this->queryBuilder = $queryBuilder;
         $this->matchQueryBuilder = $matchQueryBuilder;
         $this->filterBuilder = $filterBuilder;
@@ -76,6 +77,8 @@ class Mapper
             )
         );
 
+        $this->addDefaultQuery($searchQuery['query']);
+
         return $searchQuery;
     }
 
@@ -91,9 +94,10 @@ class Mapper
      */
     protected function processQuery(
         RequestQueryInterface $requestQuery,
-        array $selectQuery,
-        $conditionType
-    ) {
+        array                 $selectQuery,
+                              $conditionType
+    )
+    {
         switch ($requestQuery->getType()) {
             case RequestQueryInterface::TYPE_MATCH:
                 /** @var MatchQuery $requestQuery */
@@ -131,8 +135,9 @@ class Mapper
      */
     protected function processBoolQuery(
         BoolQuery $query,
-        array $selectQuery
-    ) {
+        array     $selectQuery
+    )
+    {
         $selectQuery = $this->processBoolQueryCondition(
             $query->getMust(),
             $selectQuery,
@@ -166,8 +171,9 @@ class Mapper
     protected function processBoolQueryCondition(
         array $subQueryList,
         array $selectQuery,
-        $conditionType
-    ) {
+              $conditionType
+    )
+    {
         foreach ($subQueryList as $subQuery) {
             $selectQuery = $this->processQuery($subQuery, $selectQuery, $conditionType);
         }
@@ -185,9 +191,10 @@ class Mapper
      */
     private function processFilterQuery(
         FilterQuery $query,
-        array $selectQuery,
-        $conditionType
-    ) {
+        array       $selectQuery,
+                    $conditionType
+    )
+    {
         switch ($query->getReferenceType()) {
             case FilterQuery::REFERENCE_QUERY:
                 $selectQuery = $this->processQuery($query->getReference(), $selectQuery, $conditionType);
@@ -207,5 +214,29 @@ class Mapper
         }
 
         return $selectQuery;
+    }
+
+    private function addDefaultQuery(&$query)
+    {
+        $getParams = $_GET;
+        foreach ($getParams as $key => $value) {
+            if ($key !== 'q') {
+                // Check if a similar condition already exists before adding it
+                $exists = false;
+                foreach ($query['bool']['must'] as $existingCondition) {
+                    if (isset($existingCondition['term'][$key]) && $existingCondition['term'][$key] === $value) {
+                        $exists = true;
+                        break;
+                    }
+                }
+
+                // Add the condition only if it doesn't exist
+                if (!$exists) {
+                    $query['bool']['must'][] = [
+                        'term' => [$key => $value],
+                    ];
+                }
+            }
+        }
     }
 }
