@@ -51,7 +51,8 @@ define([
             template_product_suggestion_selector: '#product-suggestion',
             template_category_suggestion_selector: '#category-suggestion',
             template_word_suggestion_selector: '#word-suggestion',
-            destinationSelector: '#search_autocomplete'
+            destinationSelector: '#search_autocomplete',
+            formSelector: 'form'
         },
 
         _create: function () {
@@ -78,7 +79,11 @@ define([
             this.searchForm.on('submit', $.proxy(function () {
                 this._onSubmit();
             }, this));
+
+            // Create an AJAX request object to store the current request
+            this.currentRequest = null;
         },
+
         _onSubmit: function (e) {
             var value = this.element.val();
 
@@ -98,64 +103,76 @@ define([
             searchField.closest('form').addClass('loading');
             this.submitBtn.disabled = true;
 
-            $.get(this.options.url, {q: value}, $.proxy(function (data) {
+            // If there is an ongoing request, abort it
+            if (this.currentRequest) {
+                this.currentRequest.abort();
+            }
 
-                this.submitBtn.disabled = false;
+            // Create a new AJAX request
+            this.currentRequest = $.ajax({
+                url: this.options.url,
+                data: { q: value },
+                success: $.proxy(function (data) {
+                    this.submitBtn.disabled = false;
 
-                var categorySuggestions = $('<div class="category-suggestions"></div>');
-                $.each(data.results.categories, function (index, element) {
-                    element.index = index;
-                    var html = templateCategorySuggestion({
-                        data: element
+                    var categorySuggestions = $('<div class="category-suggestions"></div>');
+                    $.each(data.results.categories, function (index, element) {
+                        element.index = index;
+                        var html = templateCategorySuggestion({
+                            data: element
+                        });
+                        categorySuggestions.append(html);
                     });
-                    categorySuggestions.append(html);
-                });
 
-                var wordSuggestions = $('<div class="word-suggestions"></div>');
-                $.each(data.results.suggestions, function (index, element) {
-                    element.index = index;
-                    var html = templateWordSuggestion({
-                        data: element
+                    var wordSuggestions = $('<div class="word-suggestions"></div>');
+                    $.each(data.results.suggestions, function (index, element) {
+                        element.index = index;
+                        var html = templateWordSuggestion({
+                            data: element
+                        });
+                        wordSuggestions.append(html);
                     });
-                    wordSuggestions.append(html);
-                });
 
-                var productSuggestions = $('<div class="product-suggestions"></div>');
-                $.each(data.results.products, function (index, element) {
-                    element.index = index;
-                    var html = templateProductSuggestion({
-                        data: element
+                    var productSuggestions = $('<div class="product-suggestions"></div>');
+                    $.each(data.results.products, function (index, element) {
+                        element.index = index;
+                        var html = templateProductSuggestion({
+                            data: element
+                        });
+                        productSuggestions.append(html);
                     });
-                    productSuggestions.append(html);
-                });
 
-                var categoryTitle = $('<div class="category-title">Category Suggestions</div>');
-                var productTitle = $('<div class="product-title">Product Suggestions</div>');
-                var wordTitle = $('<div class="word-title">Suggestions Keywords</div>');
+                    var categoryTitle = $('<div class="category-title">Category Suggestions</div>');
+                    var productTitle = $('<div class="product-title">Product Suggestions</div>');
+                    var wordTitle = $('<div class="word-title">Suggestions Keywords</div>');
 
-                var suggestionsRow = $('<div class="row"></div>').append(
-                    $('<div class="custom-left-column"></div>').append(productTitle, productSuggestions),
-                    $('<div class="custom-right-column"></div>').append(categoryTitle, categorySuggestions),
-                    $('<div class="custom-right-column"></div>').append(wordTitle, wordSuggestions)
-                );
-                this.autoComplete.html(suggestionsRow).show();
-                this.element
-                    .removeAttr('aria-activedescendant')
-                    .closest('form').removeClass('loading');
+                    var suggestionsRow = $('<div class="row"></div>').append(
+                        $('<div class="custom-left-column"></div>').append(productTitle, productSuggestions),
+                        $('<div class="custom-right-column"></div>').append(categoryTitle, categorySuggestions),
+                        $('<div class="custom-right-column"></div>').append(wordTitle, wordSuggestions)
+                    );
+                    this.autoComplete.html(suggestionsRow).show();
+                    this.element
+                        .removeAttr('aria-activedescendant')
+                        .closest('form').removeClass('loading');
 
-                // Close action
-                var closeBtn = this.autoComplete.find(this.options.closeBtn);
-                closeBtn.on('click', $.proxy(function () {
-                    this.autoComplete.hide();
-                }, this));
-                $(document).on('click', $.proxy(function (event) {
-                    if (this.searchForm.has($(event.target)).length <= 0) {
+                    // Close action
+                    var closeBtn = this.autoComplete.find(this.options.closeBtn);
+                    closeBtn.on('click', $.proxy(function () {
                         this.autoComplete.hide();
-                    }
-                }, this));
+                    }, this));
+                    $(document).on('click', $.proxy(function (event) {
+                        if (this.searchForm.has($(event.target)).length <= 0) {
+                            this.autoComplete.hide();
+                        }
+                    }, this));
 
-            }, this));
-
+                }, this),
+                complete: $.proxy(function () {
+                    // Reset the current request object
+                    this.currentRequest = null;
+                }, this)
+            });
         }
     });
 
