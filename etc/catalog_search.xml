@@ -1,0 +1,6 @@
+<!-- File: app/code/Vendor/Module/etc/catalog_search.xml -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_CatalogSearch:etc/catalog_search.xsd">
+    <catalogsearch>
+        <min_query_length>0</min_query_length>
+    </catalogsearch>
+</config>
