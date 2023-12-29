@@ -57,7 +57,7 @@ class FilterableAttributeList extends \Magento\Catalog\Model\Layer\Search\Filter
     public function getRecomdoAIAttributes()
     {
         try {
-            $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/get_layered_navigation_filter');
+            $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/' . $this->storeManager->getStore()->getCode() . '/layered_navigation_filter/?Category-Id=' . urlencode("SEARCH_PAGE"));
 
             if (!isset($rawResponse['data']) || empty($rawResponse['data'])) {
                 $rawResponse['data'] = [];
