@@ -68,7 +68,6 @@ class FilterableAttributeList extends \Magento\Catalog\Model\Layer\Category\Filt
             }
 
         } catch (\Exception $e) {
-            $this->logger->critical($e);
             // return empty search result in case an exception is thrown from OpenSearch
             $rawResponse['data'] = [];
         }
