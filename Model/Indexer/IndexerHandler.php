@@ -9,7 +9,7 @@ namespace Recomdoai\Catalog\Model\Indexer;
 use Magento\Framework\Indexer\SaveHandler\IndexerInterface;
 
 /**
- * Indexer Handler for Elasticsearch engine.
+ * ProductsIndexer Handler for Elasticsearch engine.
  */
 class IndexerHandler implements IndexerInterface
 {
