@@ -61,8 +61,7 @@ class Config extends \Magento\Catalog\Model\Config
     {
         try {
             if (!$this->isSearchPage()) {
-                $catalog = $this->catalogSession->getLastVisitedCategoryId();
-                $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/' . $this->_storeManager->getStore()->getCode() . '/sort_by_options/?Category-Id=' . urlencode($catalog));
+                $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/' . $this->_storeManager->getStore()->getCode() . '/sort_by_options/?Category-Id=' . urlencode($this->request->getParam('id')));
             } else {
                 $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/' . $this->_storeManager->getStore()->getCode() . '/sort_by_options/?Category-Id=' . urlencode('SEARCH_PAGE'));
             }
