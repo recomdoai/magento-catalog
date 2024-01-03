@@ -8,6 +8,7 @@
 namespace Recomdoai\Catalog\Model\Layer\Category;
 
 use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory;
+use Magento\Framework\App\Request\Http;
 use Magento\Store\Model\StoreManagerInterface;
 use Recomdoai\Core\Helper\Connection;
 use Magento\Catalog\Model\Session as CatalogSession;
@@ -16,12 +17,14 @@ class FilterableAttributeList extends \Magento\Catalog\Model\Layer\Category\Filt
 {
 
     public function __construct(
-        CollectionFactory       $collectionFactory,
-        StoreManagerInterface   $storeManager,
-        Connection              $connectionhelper,
-        CatalogSession $catalogSession,
+        Http                  $request,
+        CollectionFactory     $collectionFactory,
+        StoreManagerInterface $storeManager,
+        Connection            $connectionhelper,
+        CatalogSession        $catalogSession,
     )
     {
+        $this->request = $request;
         $this->catalogSession = $catalogSession;
         $this->connecthelper = $connectionhelper;
         parent::__construct($collectionFactory, $storeManager);
@@ -60,8 +63,7 @@ class FilterableAttributeList extends \Magento\Catalog\Model\Layer\Category\Filt
     public function getRecomdoAIAttributes()
     {
         try {
-            $catalog = $this->catalogSession->getLastVisitedCategoryId();
-            $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/' . $this->storeManager->getStore()->getCode() . '/layered_navigation_filter/?Category-Id=' . urlencode($catalog));
+            $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/' . $this->storeManager->getStore()->getCode() . '/layered_navigation_filter/?Category-Id=' . urlencode($this->request->getParam('id')));
 
             if (!isset($rawResponse['data']) || empty($rawResponse['data'])) {
                 $rawResponse['data'] = [];
