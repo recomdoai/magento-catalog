@@ -2,9 +2,10 @@ define([
     'jquery',
     'underscore',
     'mage/template',
+    'Magento_Catalog/js/price-utils',
     'jquery/ui',
     'mage/translate'
-], function ($, _, mageTemplate) {
+], function ($, _, mageTemplate, priceUtils) {
     'use strict';
 
     function isEmpty(value) {
@@ -16,9 +17,9 @@ define([
             timeout: 1500,
             autocomplete: 'off',
             template_product_suggestion:
-                '<li onclick="setLocation(\'<%- data.url %>\');" class="<%- data.row_class %> product-suggestion" id="qs-option-<%- data.index %>" role="option">' +
+                '<li onclick="setLocation(\'<%- data.url_key %>\');" class="<%- data.row_class %> product-suggestion" id="qs-option-<%- data.index %>" role="option">' +
                 '<div class="qs-option-image">' +
-                '<a href="<%- data.url %>" title="<%- data.name %>">' +
+                '<a href="<%- data.url_key %>" title="<%- data.name %>">' +
                 '<img src="<%- data.image %>" title="<%- data.name %>" />' +
                 '</a>' +
                 '</div>' +
@@ -26,7 +27,7 @@ define([
                 '<span class="qs-option-title">' +
                 '<a href="<%- data.url %>" title="<%- data.name %>"><%- data.name %></a>' +
                 '</span>' +
-                '<span class="qs-option-price"><%- data.price %></span>' +
+                '<span class="qs-option-price"> - <%- data.price %></span>' +
                 '</div>' +
                 '</li>',
             template_category_suggestion:
@@ -91,7 +92,6 @@ define([
                 e.preventDefault();
             }
         },
-
         _onPropertyChange: function () {
             var searchField = this.element,
                 templateProductSuggestion = mageTemplate(this.options.template_product_suggestion),
@@ -111,7 +111,7 @@ define([
             // Create a new AJAX request
             this.currentRequest = $.ajax({
                 url: this.options.url,
-                data: { q: value },
+                data: {q: value},
                 success: $.proxy(function (data) {
                     this.submitBtn.disabled = false;
 
@@ -135,6 +135,16 @@ define([
 
                     var productSuggestions = $('<div class="product-suggestions"></div>');
                     $.each(data.results.products, function (index, element) {
+                        var priceFormat = {
+                            decimalSymbol: '.',
+                            groupLength: 3,
+                            groupSymbol: ",",
+                            integerRequired: false,
+                            pattern: "$%s",
+                            precision: 2,
+                            requiredPrecision: 2
+                        };
+                        element.price = priceUtils.formatPriceLocale(element.price, priceFormat, false);
                         element.index = index;
                         var html = templateProductSuggestion({
                             data: element

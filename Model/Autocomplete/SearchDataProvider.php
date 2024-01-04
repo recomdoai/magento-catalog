@@ -149,16 +149,7 @@ class SearchDataProvider extends \Magento\CatalogSearch\Model\Autocomplete\DataP
 
         $results = [];
         if (isset($collection['data']) && !empty($collection['data']['main_results'])) {
-            foreach ($collection['data']['main_results'] as $product) {
-                $product = $this->productRepository->getById($product['id']);
-                $results['products'][$product->getId()] = [
-                    'id' => $product->getId(),
-                    'name' => $product->getName(),
-                    'price' => $this->_getProductPrice($product),
-                    'image' => $this->_getImageUrl($product),
-                    'url' => $product->getProductUrl(),
-                ];
-            }
+            $results['products'] = $collection['data']['main_results'];
         } else {
             $results['products'] = [];
         }
