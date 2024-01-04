@@ -116,41 +116,47 @@ define([
                     this.submitBtn.disabled = false;
 
                     var categorySuggestions = $('<div class="category-suggestions"></div>');
-                    $.each(data.results.categories, function (index, element) {
-                        element.index = index;
-                        var html = templateCategorySuggestion({
-                            data: element
+                    if (data.results.suggestions) {
+                        $.each(data.results.categories, function (index, element) {
+                            element.index = index;
+                            var html = templateCategorySuggestion({
+                                data: element
+                            });
+                            categorySuggestions.append(html);
                         });
-                        categorySuggestions.append(html);
-                    });
+                    }
 
                     var wordSuggestions = $('<div class="word-suggestions"></div>');
-                    $.each(data.results.suggestions, function (index, element) {
-                        element.index = index;
-                        var html = templateWordSuggestion({
-                            data: element
+                    if (data.results.suggestions) {
+                        $.each(data.results.suggestions, function (index, element) {
+                            element.index = index;
+                            var html = templateWordSuggestion({
+                                data: element
+                            });
+                            wordSuggestions.append(html);
                         });
-                        wordSuggestions.append(html);
-                    });
+                    }
 
-                    var productSuggestions = $('<div class="product-suggestions"></div>');
-                    $.each(data.results.products, function (index, element) {
-                        var priceFormat = {
-                            decimalSymbol: '.',
-                            groupLength: 3,
-                            groupSymbol: ",",
-                            integerRequired: false,
-                            pattern: "$%s",
-                            precision: 2,
-                            requiredPrecision: 2
-                        };
-                        element.price = priceUtils.formatPriceLocale(element.price, priceFormat, false);
-                        element.index = index;
-                        var html = templateProductSuggestion({
-                            data: element
+                    if (data.results.products) {
+                        var productSuggestions = $('<div class="product-suggestions"></div>');
+                        $.each(data.results.products, function (index, element) {
+                            var priceFormat = {
+                                decimalSymbol: '.',
+                                groupLength: 3,
+                                groupSymbol: ",",
+                                integerRequired: false,
+                                pattern: "$%s",
+                                precision: 2,
+                                requiredPrecision: 2
+                            };
+                            element.price = priceUtils.formatPriceLocale(element.price, priceFormat, false);
+                            element.index = index;
+                            var html = templateProductSuggestion({
+                                data: element
+                            });
+                            productSuggestions.append(html);
                         });
-                        productSuggestions.append(html);
-                    });
+                    }
 
                     var categoryTitle = $('<div class="category-title">Category Suggestions</div>');
                     var productTitle = $('<div class="product-title">Product Suggestions</div>');
