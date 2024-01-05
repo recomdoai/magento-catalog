@@ -116,8 +116,8 @@ define([
                     this.submitBtn.disabled = false;
 
                     var categorySuggestions = $('<div class="category-suggestions"></div>');
-                    if (data.results.suggestions) {
-                        $.each(data.results.categories, function (index, element) {
+                    if (data.suggestions) {
+                        $.each(data.categories, function (index, element) {
                             element.index = index;
                             var html = templateCategorySuggestion({
                                 data: element
@@ -127,8 +127,8 @@ define([
                     }
 
                     var wordSuggestions = $('<div class="word-suggestions"></div>');
-                    if (data.results.suggestions) {
-                        $.each(data.results.suggestions, function (index, element) {
+                    if (data.suggestions) {
+                        $.each(data.suggestions, function (index, element) {
                             element.index = index;
                             var html = templateWordSuggestion({
                                 data: element
@@ -137,9 +137,9 @@ define([
                         });
                     }
 
-                    if (data.results.products) {
+                    if (data.products) {
                         var productSuggestions = $('<div class="product-suggestions"></div>');
-                        $.each(data.results.products, function (index, element) {
+                        $.each(data.products, function (index, element) {
                             var priceFormat = {
                                 decimalSymbol: '.',
                                 groupLength: 3,
