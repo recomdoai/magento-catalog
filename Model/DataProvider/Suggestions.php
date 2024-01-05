@@ -7,6 +7,7 @@ namespace Recomdoai\Catalog\Model\DataProvider;
 use Elasticsearch\Common\Exceptions\BadRequest400Exception;
 use Magento\AdvancedSearch\Model\SuggestedQueriesInterface;
 use Magento\Elasticsearch\Model\Config;
+use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
 use Recomdoai\Catalog\Model\DataProvider\Base\GetSuggestionFrequencyInterface;
 use Recomdoai\Core\Helper\Connection;
@@ -29,6 +30,7 @@ class Suggestions implements SuggestedQueriesInterface
         Connection                       $connectionhelper,
         LoggerInterface                  $logger = null,
         ?GetSuggestionFrequencyInterface $getSuggestionFrequency = null,
+        StoreManagerInterface            $storeManager,
         array                            $responseErrorExceptionList = []
     )
     {
@@ -38,6 +40,7 @@ class Suggestions implements SuggestedQueriesInterface
         $this->config = $config;
         $this->logger = $logger;
         $this->getSuggestionFrequency = $getSuggestionFrequency;
+        $this->storeManager = $storeManager;
         $this->responseErrorExceptionList = array_merge($this->responseErrorExceptionList, $responseErrorExceptionList);
     }
 
@@ -47,7 +50,7 @@ class Suggestions implements SuggestedQueriesInterface
         $suggestions = [];
         $queryText = urlencode($query->getQueryText());
 
-        $result = $this->connecthelper->requestGetAPI('search/recomdoai_api/m2_suggestions?keyword=' . $queryText);
+        $result = $this->connecthelper->requestGetAPI('search/recomdoai_api/' . $this->storeManager->getStore()->getCode() . '/suggestions?keyword=' . $queryText);
 
         if (is_array($result) && isset($result['data'])) {
             foreach ($result['data']['suggest'] ?? [] as $suggest) {
