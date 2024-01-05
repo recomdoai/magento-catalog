@@ -28,9 +28,9 @@ class Suggestions implements SuggestedQueriesInterface
         Config                           $config,
         QueryResultFactory               $queryResultFactory,
         Connection                       $connectionhelper,
+        StoreManagerInterface            $storeManager,
         LoggerInterface                  $logger = null,
         ?GetSuggestionFrequencyInterface $getSuggestionFrequency = null,
-        StoreManagerInterface            $storeManager,
         array                            $responseErrorExceptionList = []
     )
     {
@@ -38,9 +38,9 @@ class Suggestions implements SuggestedQueriesInterface
         $this->queryResultFactory = $queryResultFactory;
         $this->scopeConfig = $scopeConfig;
         $this->config = $config;
+        $this->storeManager = $storeManager;
         $this->logger = $logger;
         $this->getSuggestionFrequency = $getSuggestionFrequency;
-        $this->storeManager = $storeManager;
         $this->responseErrorExceptionList = array_merge($this->responseErrorExceptionList, $responseErrorExceptionList);
     }
 
