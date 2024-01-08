@@ -298,5 +298,5 @@
     <preference for="Magento\Catalog\Model\Layer\Search\FilterableAttributeList" type="Recomdoai\Catalog\Model\Layer\Search\FilterableAttributeList" />
     <preference for="Magento\Catalog\Model\Layer\Category\FilterableAttributeList" type="Recomdoai\Catalog\Model\Layer\Category\FilterableAttributeList" />
     <preference for="Magento\Catalog\Model\Config" type="Recomdoai\Catalog\Model\Config" />
-
+    <preference for="Magento\CatalogSearch\Block\Result" type="Recomdoai\Catalog\Block\Result" />
 </config>
