@@ -55,7 +55,7 @@ class Suggest extends Action
 
     protected function getProductCollection($query)
     {
-        $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/' . $this->storeManager->getStore()->getCode() . '/autocomplete/?keyword=' . $query);
+        $rawResponse = $this->connecthelper->requestGetAPI('search/recomdoai_api/rest/' . $this->storeManager->getStore()->getCode() . '/autocomplete/?keyword=' .  urlencode($query));
         return $rawResponse;
     }
 }
